@@ -102,7 +102,7 @@ def test_R_CNV_03_auth_unknown_fields_ignored(fresh):
     assert r.status_code == 200
 
 
-@pytest.mark.parametrize("hdr", [None, "Bearer", "Bearer ", "Bearer not-a-real-token",
+@pytest.mark.parametrize("hdr", [None, "Bearer", "Bearer not-a-real-token", "bearer",
                                  "Basic dXNlcjpwYXNz", "token-without-scheme"])
 def test_R_AUTH_09_protected_endpoints_need_token(fresh, hdr):
     api, _ = fresh

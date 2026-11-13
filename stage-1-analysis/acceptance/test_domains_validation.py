@@ -65,7 +65,7 @@ def test_R_DOM_05_edge_valid_domains(fresh, raw, norm):
     r = api.create(tok, raw)
     assert r.status_code == 202, r.text
     assert r.json()["domain"] == norm
-    api.wait(tok, norm)
+    api.wait(tok, raw)  # the path is normalised too: www.www.x -> www.x
 
 
 def test_R_DOM_02_total_length_254_invalid(fresh):
