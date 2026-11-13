@@ -17,6 +17,10 @@ from .validation import (Invalid, WrongType, is_email, normalise_domain, paging_
 log = logging.getLogger("dossier.http")
 
 _MISSING = object()
+MAX_BODY = 64 * 1024 * 1024
+_HTTP_ERROR_CODES = {400: "malformed_request", 404: "not_found", 405: "method_not_allowed",
+                     408: "request_timeout", 413: "payload_too_large", 414: "uri_too_long",
+                     431: "headers_too_large", 505: "malformed_request"}
 
 
 class ApiError(Exception):
@@ -247,36 +251,37 @@ class Api:
 
     # ---------------------------------------------------------------- routing
 
+    def routes(self, segments: list[str], path: str, query: str, headers, raw: bytes) -> dict:
+        """The handlers for a path, by method; empty when the path names nothing."""
+        fixed = {
+            ("health",): {"GET": self.health},
+            ("_test", "reset"): {"POST": lambda: self.reset(raw)},
+            ("_test", "clock"): {"POST": lambda: self.clock(raw)},
+            ("_test", "export"): {"GET": self.export},
+            ("_test", "import"): {"POST": lambda: self.import_(raw)},
+            ("auth", "signup"): {"POST": lambda: self.signup(raw)},
+            ("auth", "login"): {"POST": lambda: self.login(raw)},
+            ("dossiers",): {"POST": lambda: self.create_dossier(headers, path, raw),
+                            "GET": lambda: self.list_dossiers(headers, query)},
+        }
+        key = tuple(segments)
+        if key in fixed:
+            return fixed[key]
+        if len(segments) == 2 and segments[0] == "dossiers":
+            return {"GET": lambda: self.get_dossier(headers, unquote(segments[1]))}
+        if len(segments) == 3 and segments[0] == "dossiers" and segments[2] == "refresh":
+            return {"POST": lambda: self.refresh_dossier(headers, path, unquote(segments[1]))}
+        return {}
+
     def dispatch(self, method: str, target: str, headers, raw: bytes):
         parts = urlsplit(target)
-        path = parts.path
-        segments = [s for s in path.split("/") if s]
-        route = (method, *segments)
-
-        if route == ("GET", "health"):
-            return self.health()
-        if route == ("POST", "_test", "reset"):
-            return self.reset(raw)
-        if route == ("POST", "_test", "clock"):
-            return self.clock(raw)
-        if route == ("GET", "_test", "export"):
-            return self.export()
-        if route == ("POST", "_test", "import"):
-            return self.import_(raw)
-        if route == ("POST", "auth", "signup"):
-            return self.signup(raw)
-        if route == ("POST", "auth", "login"):
-            return self.login(raw)
-        if segments[:1] == ["dossiers"]:
-            if route == ("POST", "dossiers"):
-                return self.create_dossier(headers, path, raw)
-            if route == ("GET", "dossiers"):
-                return self.list_dossiers(headers, parts.query)
-            if len(segments) == 2 and method == "GET":
-                return self.get_dossier(headers, unquote(segments[1]))
-            if len(segments) == 3 and segments[2] == "refresh" and method == "POST":
-                return self.refresh_dossier(headers, path, unquote(segments[1]))
-        raise not_found("no such route")
+        segments = [s for s in parts.path.split("/") if s]
+        handlers = self.routes(segments, parts.path, parts.query, headers, raw)
+        if not handlers:
+            raise not_found("no such route")
+        if method not in handlers:
+            raise ApiError(405, "method_not_allowed", f"{method} is not allowed here")
+        return handlers[method]()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -287,12 +292,39 @@ class Handler(BaseHTTPRequestHandler):
         log.debug("%s - " + fmt, self.address_string(), *args)
 
     def _body(self) -> bytes:
+        """The request body, from Content-Length or chunked transfer coding."""
+        if "chunked" in (self.headers.get("Transfer-Encoding") or "").lower():
+            return self._chunked_body()
         length = self.headers.get("Content-Length")
         try:
             size = int(length) if length else 0
         except ValueError:
-            size = 0
+            self.close_connection = True
+            raise malformed("invalid Content-Length") from None
+        if size > MAX_BODY:
+            self.close_connection = True
+            raise ApiError(413, "payload_too_large", "request body is too large")
         return self.rfile.read(size) if size > 0 else b""
+
+    def _chunked_body(self) -> bytes:
+        chunks, total = [], 0
+        try:
+            while True:
+                line = self.rfile.readline(1024)
+                size = int(line.split(b";", 1)[0].strip(), 16)
+                if size == 0:
+                    while self.rfile.readline(8192).strip():
+                        pass  # trailer fields
+                    return b"".join(chunks)
+                total += size
+                if total > MAX_BODY:
+                    self.close_connection = True
+                    raise ApiError(413, "payload_too_large", "request body is too large")
+                chunks.append(self.rfile.read(size))
+                self.rfile.readline(8)  # the CRLF after each chunk
+        except ValueError:
+            self.close_connection = True
+            raise malformed("invalid chunked body") from None
 
     def _send(self, status: int, payload) -> None:
         body = b"" if payload is None else json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -300,13 +332,15 @@ class Handler(BaseHTTPRequestHandler):
         if payload is not None:
             self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
+        if self.close_connection:
+            self.send_header("Connection", "close")
         self.end_headers()
-        if body:
+        if body and self.command != "HEAD":
             self.wfile.write(body)
 
     def _handle(self, method: str) -> None:
-        raw = self._body()
         try:
+            raw = self._body()
             status, payload = self.api.dispatch(method, self.path, self.headers, raw)
         except ApiError as exc:
             status, payload = exc.status, {"error": {"code": exc.code, "message": exc.message}}
@@ -329,6 +363,29 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_DELETE(self):  # noqa: N802
         self._handle("DELETE")
+
+    def do_OPTIONS(self):  # noqa: N802
+        self._handle("OPTIONS")
+
+    def do_HEAD(self):  # noqa: N802
+        self._handle("HEAD")
+
+    def send_error(self, code, message=None, explain=None):
+        """Errors raised by the HTTP layer itself (bad request line, unknown method, huge headers) as JSON (§5)."""
+        if code == 501:
+            code = 405   # a method this server has no handler for
+        error = _HTTP_ERROR_CODES.get(code, "malformed_request" if code < 500 else "internal_error")
+        if self.request_version == "HTTP/0.9":
+            self.request_version = "HTTP/1.1"   # always answer with a status line and headers
+        self.close_connection = True
+        body = json.dumps({"error": {"code": error, "message": message or error.replace("_", " ")}}).encode()
+        self.send_response(code, message)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Connection", "close")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(body)
 
 
 class Server(ThreadingHTTPServer):

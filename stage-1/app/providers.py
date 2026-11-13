@@ -42,14 +42,35 @@ LIVE = _is_live()
 CALL_TIMEOUT = float(os.environ.get("DOSSIER_CALL_TIMEOUT", 45 if LIVE else 20))
 RESEARCH_TIMEOUT = float(os.environ.get("DOSSIER_RESEARCH_TIMEOUT", 180 if LIVE else 30))
 MAX_OUTBOUND = int(os.environ.get("DOSSIER_MAX_OUTBOUND", 48))
+# §8: a build may stop gathering once it has run GATHER_WINDOW seconds, and ends by BUILD_CAP
+# (inside the 300 s the specification allows): no call starts that could outlast the cap.
+GATHER_WINDOW = float(os.environ.get("DOSSIER_GATHER_WINDOW", 120))
+BUILD_CAP = float(os.environ.get("DOSSIER_BUILD_CAP", 270))
+
+
+class Deadline:
+    """A build's clock: when it may still start a call that waits up to a given time."""
+
+    def __init__(self, gather_window: float = GATHER_WINDOW, cap: float = BUILD_CAP, clock=time.monotonic):
+        self.gather_window = gather_window
+        self.cap = cap
+        self._clock = clock
+        self.start = clock()
+
+    def elapsed(self) -> float:
+        return self._clock() - self.start
+
+    def left(self) -> float:
+        return self.cap - self.elapsed()
+
+    def may_start(self, longest_wait: float) -> bool:
+        """Only inside the gathering window, and only a call that would end before the cap."""
+        elapsed = self.elapsed()
+        return elapsed < self.gather_window and elapsed + longest_wait <= self.cap
 
 
 class Cancelled(Exception):
     """The build was superseded (reset or import) and must make no further calls."""
-
-
-class BudgetExhausted(Exception):
-    """The call would take the build past its unit limit."""
 
 
 class Budget:
@@ -90,6 +111,7 @@ class Outcome:
     value: object = None
     refused: bool = False       # every attempt answered with an error status
     exhausted: bool = False     # not sent: the budget could not cover it
+    stopped: bool = False       # not sent: the build's time to gather is over
     errors: list = field(default_factory=list)
 
 
@@ -118,11 +140,12 @@ def _tavily_refused(exc: BaseException) -> bool:
 class Gateway:
     """The one place provider calls are made."""
 
-    def __init__(self):
-        config = {"nimble": {"max_retries": 0, "timeout": CALL_TIMEOUT}}
+    def __init__(self, call_timeout: float = CALL_TIMEOUT):
+        self.call_timeout = call_timeout
+        config = {"nimble": {"max_retries": 0, "timeout": call_timeout}}
         self.tavily_enabled = bool(os.environ.get("TAVILY_API_KEY"))
         if self.tavily_enabled:
-            tavily = {"timeout": CALL_TIMEOUT}
+            tavily = {"timeout": call_timeout}
             if os.environ.get("TAVILY_BASE_URL"):
                 tavily["api_base_url"] = os.environ["TAVILY_BASE_URL"]
             config["tavily"] = tavily
@@ -130,15 +153,22 @@ class Gateway:
         self._router = WebRouter("nimble", provider_config=config)
         self._outbound = threading.BoundedSemaphore(MAX_OUTBOUND)
 
-    def call(self, provider: str, method: str, depth: str | None, budget: Budget, cancelled, invoke) -> Outcome:
-        """Make one logical call, retrying refusals (which cost nothing) and never a call that went unanswered."""
+    def call(self, provider: str, method: str, depth: str | None, budget: Budget, cancelled, deadline: Deadline,
+             invoke, longest_wait: float | None = None) -> Outcome:
+        """Make one logical call, retrying refusals (which cost nothing) and never a call that went unanswered.
+
+        longest_wait is how long the call may take, by default the per-call timeout.
+        """
         cost = COSTS[(provider, method, depth)]
+        wait = self.call_timeout if longest_wait is None else longest_wait
         errors = []
         attempts = 1 + RATE_LIMIT_RETRIES
         error_retries = ERROR_RETRIES
         for _ in range(attempts):
             if cancelled():
                 raise Cancelled()
+            if not deadline.may_start(wait):
+                return Outcome(ok=False, provider=provider, stopped=True, errors=errors)
             if not budget.reserve(cost):
                 return Outcome(ok=False, provider=provider, exhausted=True, errors=errors)
             try:
@@ -169,28 +199,39 @@ class Gateway:
 
     # ---- the three operations a build uses
 
-    def search(self, provider, query, budget, cancelled, depth="lite", max_results=10) -> Outcome:
+    def search(self, provider, query, budget, cancelled, deadline, depth="lite", max_results=10) -> Outcome:
         def invoke():
             response = self._router.search(query, provider=provider, search_depth=depth, max_results=max_results)
             return [(r.url, r.title or "", r.content or r.description or "") for r in response.results if r.url]
-        return self.call(provider, "search", depth, budget, cancelled, invoke)
+        return self.call(provider, "search", depth, budget, cancelled, deadline, invoke)
 
-    def extract(self, provider, url, budget, cancelled) -> Outcome:
+    def extract(self, provider, url, budget, cancelled, deadline) -> Outcome:
         """One URL per call, so each URL's cost and outcome are known."""
         def invoke():
             response = self._router.extract([url], provider=provider, format="markdown")
             docs = [d for d in response.documents if d.content]
             return docs[0].content if docs else None
-        outcome = self.call(provider, "extract", None, budget, cancelled, invoke)
-        if not outcome.ok and not outcome.refused and not outcome.exhausted and _no_page(outcome):
+        outcome = self.call(provider, "extract", None, budget, cancelled, deadline, invoke)
+        if not outcome.ok and not outcome.refused and not outcome.exhausted and not outcome.stopped \
+                and _no_page(outcome):
             # The provider answered that it has no page: a charged answer, not a failure to reach it.
             outcome.value = None
         return outcome
 
-    def research(self, query, schema, budget, cancelled) -> Outcome:
+    def research(self, query, schema, budget, cancelled, deadline) -> Outcome:
+        """A research run, waited on for as long as the build's cap allows (and at most RESEARCH_TIMEOUT).
+
+        Starting the run is one request bounded by the call timeout; waiting for its answer
+        polls for free. Units are charged once the run is started, answered or not.
+        """
+        wait = min(RESEARCH_TIMEOUT, deadline.left() - self.call_timeout)
+
         def invoke():
-            return self._router.research(query, provider="nimble", output_schema=schema, timeout=RESEARCH_TIMEOUT)
-        return self.call("nimble", "research", None, budget, cancelled, invoke)
+            return self._router.research(query, provider="nimble", output_schema=schema, timeout=max(wait, 1.0))
+        if wait <= 0:
+            return Outcome(ok=False, provider="nimble", stopped=True)
+        return self.call("nimble", "research", None, budget, cancelled, deadline, invoke,
+                         longest_wait=self.call_timeout + wait)
 
 
 def _no_page(outcome: Outcome) -> bool:

@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 from .builder import BuildResult, Builder, empty_fields
 from .passwords import is_password_hash
-from .providers import BUILD_BUDGET, Budget, Gateway
+from .providers import BUILD_BUDGET, Budget, Deadline, Gateway
 from .support import FIELDS, HEADCOUNT_VALUES
 from .validation import Invalid, format_timestamp, parse_timestamp
 
@@ -227,7 +227,7 @@ class Store:
 
         budget = Budget(BUILD_BUDGET, on_spend)
         try:
-            result = Builder(self.gateway, record["domain"], budget, cancelled).run()
+            result = Builder(self.gateway, record["domain"], budget, cancelled, Deadline()).run()
         except Exception:  # noqa: BLE001 - a broken build ends failed, never takes the service down
             log.exception("build of %s crashed", record["domain"])
             result = BuildResult(succeeded=False)

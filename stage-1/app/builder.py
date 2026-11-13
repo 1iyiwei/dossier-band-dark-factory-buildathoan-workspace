@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
 from .pages import appears_in, citable_sentences, prose_of
-from .providers import Budget, Cancelled, Gateway
+from .providers import Budget, Cancelled, Deadline, Gateway
 from .support import FIELDS, company_name, names_company, normalise_claim, supported_value, supported_values
 
 log = logging.getLogger("dossier.build")
@@ -90,12 +90,13 @@ def empty_fields() -> dict:
 
 
 class Builder:
-    def __init__(self, gateway: Gateway, domain: str, budget: Budget, cancelled):
+    def __init__(self, gateway: Gateway, domain: str, budget: Budget, cancelled, deadline: Deadline):
         self.gateway = gateway
         self.domain = domain
         self.name = company_name(domain).title()
         self.budget = budget
         self.cancelled = cancelled
+        self.deadline = deadline
         self.hits: dict[str, SearchHit] = {}        # by URL, in the order first returned
         self.pages: dict[str, Page] = {}            # pages gathered from search results
         self.cited_pages: dict[str, Page] = {}      # pages gathered only to check a research claim
@@ -153,9 +154,9 @@ class Builder:
                 self.hits.setdefault(hit.url, hit)
 
     def _search(self, query: str) -> list[SearchHit]:
-        outcome = self.gateway.search("nimble", query, self.budget, self.cancelled)
+        outcome = self.gateway.search("nimble", query, self.budget, self.cancelled, self.deadline)
         if outcome.refused and self.gateway.tavily_enabled:
-            outcome = self.gateway.search("tavily", query, self.budget, self.cancelled)
+            outcome = self.gateway.search("tavily", query, self.budget, self.cancelled, self.deadline)
         if not outcome.ok:
             log.info("search %r for %s failed: %s", query, self.domain, outcome.errors[-1:] or "budget")
             return []
@@ -176,9 +177,9 @@ class Builder:
         return 2
 
     def _extract(self, url: str) -> Page | None:
-        outcome = self.gateway.extract("nimble", url, self.budget, self.cancelled)
+        outcome = self.gateway.extract("nimble", url, self.budget, self.cancelled, self.deadline)
         if outcome.refused and self.gateway.tavily_enabled:
-            outcome = self.gateway.extract("tavily", url, self.budget, self.cancelled)
+            outcome = self.gateway.extract("tavily", url, self.budget, self.cancelled, self.deadline)
         if not outcome.ok or not outcome.value:
             return None
         self._succeeded()
@@ -200,7 +201,7 @@ class Builder:
     def _research(self) -> None:
         query = (f"Company profile of {self.domain}: legal_name, hq_city, ceo, founded_year, "
                  f"headcount_range, funding_total")
-        outcome = self.gateway.research(query, RESEARCH_SCHEMA, self.budget, self.cancelled)
+        outcome = self.gateway.research(query, RESEARCH_SCHEMA, self.budget, self.cancelled, self.deadline)
         if not outcome.ok:
             log.info("research for %s failed: %s", self.domain, outcome.errors[-1:] or "budget")
             return
