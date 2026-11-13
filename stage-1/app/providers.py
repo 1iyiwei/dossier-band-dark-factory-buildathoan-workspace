@@ -1,0 +1,197 @@
+"""Every provider call, through WebRouter, with its cost charged to a build's budget (§9).
+
+A call's units are reserved before it is sent and refunded only when the provider
+refuses it with an error status; a call that times out or loses its connection
+keeps its cost, as the specification charges it.
+"""
+from __future__ import annotations
+
+import os
+import threading
+import time
+from dataclasses import dataclass, field
+from urllib.parse import urlparse
+
+from web_router import ConfigurationError, ProviderNotInstalledError, WebRouter
+
+BUILD_BUDGET = 80
+
+COSTS = {
+    ("nimble", "search", "lite"): 1,
+    ("nimble", "search", "fast"): 5,
+    ("nimble", "search", "deep"): 15,
+    ("tavily", "search", "lite"): 8,
+    ("tavily", "search", "fast"): 16,
+    ("tavily", "search", "deep"): 16,
+    ("nimble", "extract", None): 1,
+    ("tavily", "extract", None): 2,
+    ("nimble", "research", None): 25,
+}
+
+RATE_LIMIT_RETRIES = 3
+ERROR_RETRIES = 1
+
+
+def _is_live() -> bool:
+    base = os.environ.get("NIMBLE_BASE_URL")
+    return base is None or urlparse(base).hostname == "sdk.nimbleway.com"
+
+
+LIVE = _is_live()
+# A call is never abandoned before it has waited 30 s against the live providers (§8).
+CALL_TIMEOUT = float(os.environ.get("DOSSIER_CALL_TIMEOUT", 45 if LIVE else 20))
+RESEARCH_TIMEOUT = float(os.environ.get("DOSSIER_RESEARCH_TIMEOUT", 180 if LIVE else 30))
+MAX_OUTBOUND = int(os.environ.get("DOSSIER_MAX_OUTBOUND", 48))
+
+
+class Cancelled(Exception):
+    """The build was superseded (reset or import) and must make no further calls."""
+
+
+class BudgetExhausted(Exception):
+    """The call would take the build past its unit limit."""
+
+
+class Budget:
+    """A build's spending, never above the limit, reported to `on_change` as it moves."""
+
+    def __init__(self, limit: int, on_change):
+        self.limit = limit
+        self.spent = 0
+        self._lock = threading.Lock()
+        self._on_change = on_change
+
+    def reserve(self, units: int) -> bool:
+        with self._lock:
+            if self.spent + units > self.limit:
+                return False
+            self.spent += units
+            spent = self.spent
+        self._on_change(spent)
+        return True
+
+    def refund(self, units: int) -> None:
+        with self._lock:
+            self.spent -= units
+            spent = self.spent
+        self._on_change(spent)
+
+    @property
+    def remaining(self) -> int:
+        with self._lock:
+            return self.limit - self.spent
+
+
+@dataclass
+class Outcome:
+    """What one logical call (with its retries) came to."""
+    ok: bool
+    provider: str
+    value: object = None
+    refused: bool = False       # every attempt answered with an error status
+    exhausted: bool = False     # not sent: the budget could not cover it
+    errors: list = field(default_factory=list)
+
+
+def _status_of(exc: BaseException) -> int | None:
+    """The HTTP error status a provider answered with, or None when no answer arrived."""
+    for candidate in (getattr(exc, "original", None), exc.__cause__, exc):
+        if candidate is None:
+            continue
+        status = getattr(candidate, "status_code", None)
+        if isinstance(status, int):
+            return status
+        response = getattr(candidate, "response", None)
+        status = getattr(response, "status_code", None)
+        if isinstance(status, int) and status >= 400:
+            return status
+    return None
+
+
+def _tavily_refused(exc: BaseException) -> bool:
+    """Tavily's SDK raises its own classes for error answers; timeouts and lost connections are not refusals."""
+    original = getattr(exc, "original", None) or exc.__cause__ or exc
+    name = type(original).__name__
+    return name not in ("TimeoutError", "ConnectionError", "Timeout", "ReadTimeout", "ConnectTimeout")
+
+
+class Gateway:
+    """The one place provider calls are made."""
+
+    def __init__(self):
+        config = {"nimble": {"max_retries": 0, "timeout": CALL_TIMEOUT}}
+        self.tavily_enabled = bool(os.environ.get("TAVILY_API_KEY"))
+        if self.tavily_enabled:
+            tavily = {"timeout": CALL_TIMEOUT}
+            if os.environ.get("TAVILY_BASE_URL"):
+                tavily["api_base_url"] = os.environ["TAVILY_BASE_URL"]
+            config["tavily"] = tavily
+        self.nimble_enabled = bool(os.environ.get("NIMBLE_API_KEY"))
+        self._router = WebRouter("nimble", provider_config=config)
+        self._outbound = threading.BoundedSemaphore(MAX_OUTBOUND)
+
+    def call(self, provider: str, method: str, depth: str | None, budget: Budget, cancelled, invoke) -> Outcome:
+        """Make one logical call, retrying refusals (which cost nothing) and never a call that went unanswered."""
+        cost = COSTS[(provider, method, depth)]
+        errors = []
+        attempts = 1 + RATE_LIMIT_RETRIES
+        error_retries = ERROR_RETRIES
+        for _ in range(attempts):
+            if cancelled():
+                raise Cancelled()
+            if not budget.reserve(cost):
+                return Outcome(ok=False, provider=provider, exhausted=True, errors=errors)
+            try:
+                with self._outbound:
+                    value = invoke()
+                return Outcome(ok=True, provider=provider, value=value)
+            except (ConfigurationError, ProviderNotInstalledError) as exc:
+                # Nothing was sent: the provider is not configured in this deployment.
+                budget.refund(cost)
+                errors.append(f"{type(exc).__name__}: {exc}"[:300])
+                break
+            except Exception as exc:  # noqa: BLE001 - every provider failure is an outcome, never a 5xx
+                status = _status_of(exc)
+                refused = status is not None if provider == "nimble" else _tavily_refused(exc)
+                errors.append(f"{type(exc).__name__}: {exc}"[:300])
+                if not refused:
+                    return Outcome(ok=False, provider=provider, errors=errors)
+                budget.refund(cost)
+                if status == 429:
+                    time.sleep(1.1)
+                    continue
+                if error_retries > 0:
+                    error_retries -= 1
+                    time.sleep(0.5)
+                    continue
+                break
+        return Outcome(ok=False, provider=provider, refused=True, errors=errors)
+
+    # ---- the three operations a build uses
+
+    def search(self, provider, query, budget, cancelled, depth="lite", max_results=10) -> Outcome:
+        def invoke():
+            response = self._router.search(query, provider=provider, search_depth=depth, max_results=max_results)
+            return [(r.url, r.title or "", r.content or r.description or "") for r in response.results if r.url]
+        return self.call(provider, "search", depth, budget, cancelled, invoke)
+
+    def extract(self, provider, url, budget, cancelled) -> Outcome:
+        """One URL per call, so each URL's cost and outcome are known."""
+        def invoke():
+            response = self._router.extract([url], provider=provider, format="markdown")
+            docs = [d for d in response.documents if d.content]
+            return docs[0].content if docs else None
+        outcome = self.call(provider, "extract", None, budget, cancelled, invoke)
+        if not outcome.ok and not outcome.refused and not outcome.exhausted and _no_page(outcome):
+            # The provider answered that it has no page: a charged answer, not a failure to reach it.
+            outcome.value = None
+        return outcome
+
+    def research(self, query, schema, budget, cancelled) -> Outcome:
+        def invoke():
+            return self._router.research(query, provider="nimble", output_schema=schema, timeout=RESEARCH_TIMEOUT)
+        return self.call("nimble", "research", None, budget, cancelled, invoke)
+
+
+def _no_page(outcome: Outcome) -> bool:
+    return any("no URL could be extracted" in e for e in outcome.errors)
