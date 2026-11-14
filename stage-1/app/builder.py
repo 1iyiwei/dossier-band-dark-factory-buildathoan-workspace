@@ -10,6 +10,9 @@ Spending plan, within the 80-unit budget (§9):
      New results are extracted as in step 2.
   4. Research claims for unknown fields are checked against their page, extracted if needed.
   5. With budget left and fields still unknown, the remaining results are extracted.
+When every provider refuses extracts, no more are attempted in that build: a Nimble `deep`
+search (15 units, whole page texts) for the company's name replaces step 2, and step 3's
+field searches are `deep` too, as many as the budget allows after the research run.
 Tavily is used only when Nimble refuses a call and a Tavily key is configured.
 
 A value is asserted only when a cited excerpt supports it by Appendix A (`support.py`).
@@ -37,6 +40,7 @@ FIELD_QUERY_WORDS = {
     "funding_total": "funding raised",
 }
 RESEARCH_COST = 25
+DEEP_SEARCH_COST = 15
 MAX_CITATIONS = 5
 SNIPPET_MAY_BE_CUT = 250   # a snippet at least this long may end mid-sentence
 WORKERS = 8
@@ -103,6 +107,7 @@ class Builder:
         self.attempted: set[str] = set()
         self.claims: list[Claim] = []
         self.successes = 0
+        self.extract_down = False                   # every provider refused an extract this build
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ the plan
@@ -113,13 +118,22 @@ class Builder:
             try:
                 self._searches([self.domain, self.name])
                 self._gather(max_priority=1)
+                if self.extract_down:
+                    # No page text from extracts: a deep search serves whole pages instead.
+                    self._searches([self.name], depth="deep")
                 fields = self._decide()
                 unknown = self._unknown(fields)
                 if unknown:
                     research = None
                     if self.budget.remaining >= RESEARCH_COST + len(unknown):
                         research = self.pool.submit(self._research)
-                    self._searches([f"{self.name} {FIELD_QUERY_WORDS[f]}" for f in unknown])
+                    queries = [f"{self.name} {FIELD_QUERY_WORDS[f]}" for f in unknown]
+                    if self.extract_down:
+                        reserved = RESEARCH_COST if research is not None else 0
+                        affordable = max(0, (self.budget.remaining - reserved) // DEEP_SEARCH_COST)
+                        self._searches(queries[:affordable], depth="deep")
+                    else:
+                        self._searches(queries)
                     if research is not None:
                         research.result()
                     self._gather(max_priority=1)
@@ -146,23 +160,29 @@ class Builder:
 
     # ------------------------------------------------------------------ calls
 
-    def _searches(self, queries: list[str]) -> None:
-        """Run the searches side by side; their results join the hits in query order."""
-        futures = [self.pool.submit(self._search, query) for query in queries]
-        for future in futures:
-            for hit in future.result():
-                self.hits.setdefault(hit.url, hit)
+    def _searches(self, queries: list[str], depth: str = "lite") -> None:
+        """Run the searches side by side; their results join the hits in query order.
 
-    def _search(self, query: str) -> list[SearchHit]:
-        outcome = self.gateway.search("nimble", query, self.budget, self.cancelled, self.deadline)
+        A `deep` search serves each result's whole text, which is kept as the page.
+        """
+        futures = [self.pool.submit(self._search, query, depth) for query in queries]
+        for future in futures:
+            hits, provider = future.result()
+            for hit in hits:
+                self.hits.setdefault(hit.url, hit)
+                if depth == "deep" and hit.url not in self.pages and hit.snippet:
+                    self.pages[hit.url] = Page(hit.url, provider, prose_of(hit.snippet))
+
+    def _search(self, query: str, depth: str) -> tuple[list[SearchHit], str]:
+        outcome = self.gateway.search("nimble", query, self.budget, self.cancelled, self.deadline, depth=depth)
         if outcome.refused and self.gateway.tavily_enabled:
-            outcome = self.gateway.search("tavily", query, self.budget, self.cancelled, self.deadline)
+            outcome = self.gateway.search("tavily", query, self.budget, self.cancelled, self.deadline, depth=depth)
         if not outcome.ok:
             log.info("search %r for %s failed: %s", query, self.domain, outcome.errors[-1:] or "budget")
-            return []
+            return [], outcome.provider
         self._succeeded()
-        return [SearchHit(url, outcome.provider, title, snippet, self._priority(url, title, snippet))
-                for url, title, snippet in outcome.value]
+        return [SearchHit(url, outcome.provider, title, text, self._priority(url, title, text))
+                for url, title, text in outcome.value], outcome.provider
 
     def _succeeded(self) -> None:
         with self._lock:
@@ -177,9 +197,13 @@ class Builder:
         return 2
 
     def _extract(self, url: str) -> Page | None:
+        if self.extract_down:
+            return None
         outcome = self.gateway.extract("nimble", url, self.budget, self.cancelled, self.deadline)
         if outcome.refused and self.gateway.tavily_enabled:
             outcome = self.gateway.extract("tavily", url, self.budget, self.cancelled, self.deadline)
+        if outcome.refused:
+            self.extract_down = True
         if not outcome.ok or not outcome.value:
             return None
         self._succeeded()
@@ -187,7 +211,7 @@ class Builder:
 
     def _gather(self, max_priority: int) -> None:
         """Extract every search result up to the priority, best first, while the budget lasts."""
-        order = sorted((h for h in list(self.hits.values()) if h.url not in self.attempted),
+        order = sorted((h for h in list(self.hits.values()) if h.url not in self.attempted and h.url not in self.pages),
                        key=lambda h: h.priority)
         wanted = [h.url for h in order if h.priority <= max_priority]
         self.attempted.update(wanted)
