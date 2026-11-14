@@ -46,14 +46,22 @@ MAX_OUTBOUND = int(os.environ.get("DOSSIER_MAX_OUTBOUND", 48))
 # (inside the 300 s the specification allows): no call starts that could outlast the cap.
 GATHER_WINDOW = float(os.environ.get("DOSSIER_GATHER_WINDOW", 120))
 BUILD_CAP = float(os.environ.get("DOSSIER_BUILD_CAP", 270))
+# A refused call is retried after RETRY_BASE, then twice that, and so on; no retry waits
+# past RETRY_HORIZON seconds into a build. Against providers that answer within a second a
+# build must end within 10 s (§8), so its retries stop early; against the live providers
+# retries may go on for the whole gathering window.
+RETRY_BASE = float(os.environ.get("DOSSIER_RETRY_BASE", 1.0 if LIVE else 0.1))
+RETRY_HORIZON = float(os.environ.get("DOSSIER_RETRY_HORIZON", GATHER_WINDOW if LIVE else 6.0))
 
 
 class Deadline:
     """A build's clock: when it may still start a call that waits up to a given time."""
 
-    def __init__(self, gather_window: float = GATHER_WINDOW, cap: float = BUILD_CAP, clock=time.monotonic):
+    def __init__(self, gather_window: float = GATHER_WINDOW, cap: float = BUILD_CAP, clock=time.monotonic,
+                 retry_horizon: float = RETRY_HORIZON):
         self.gather_window = gather_window
         self.cap = cap
+        self.retry_horizon = retry_horizon
         self._clock = clock
         self.start = clock()
 
@@ -67,6 +75,10 @@ class Deadline:
         """Only inside the gathering window, and only a call that would end before the cap."""
         elapsed = self.elapsed()
         return elapsed < self.gather_window and elapsed + longest_wait <= self.cap
+
+    def may_retry_after(self, delay: float) -> bool:
+        """Whether a refused call may wait `delay` seconds and try again."""
+        return self.elapsed() + delay <= min(self.retry_horizon, self.gather_window)
 
 
 class Cancelled(Exception):
@@ -140,8 +152,9 @@ def _tavily_refused(exc: BaseException) -> bool:
 class Gateway:
     """The one place provider calls are made."""
 
-    def __init__(self, call_timeout: float = CALL_TIMEOUT):
+    def __init__(self, call_timeout: float = CALL_TIMEOUT, retry_base: float = RETRY_BASE):
         self.call_timeout = call_timeout
+        self.retry_base = retry_base
         config = {"nimble": {"max_retries": 0, "timeout": call_timeout}}
         self.tavily_enabled = bool(os.environ.get("TAVILY_API_KEY"))
         if self.tavily_enabled:
@@ -164,7 +177,7 @@ class Gateway:
         errors = []
         attempts = 1 + RATE_LIMIT_RETRIES
         error_retries = ERROR_RETRIES
-        for _ in range(attempts):
+        for attempt in range(attempts):
             if cancelled():
                 raise Cancelled()
             if not deadline.may_start(wait):
@@ -187,14 +200,13 @@ class Gateway:
                 if not refused:
                     return Outcome(ok=False, provider=provider, errors=errors)
                 budget.refund(cost)
-                if status == 429:
-                    time.sleep(1.1)
-                    continue
-                if error_retries > 0:
+                retry = status == 429 or error_retries > 0
+                if status != 429:
                     error_retries -= 1
-                    time.sleep(0.5)
-                    continue
-                break
+                delay = self.retry_base * (2 ** attempt)
+                if not retry or attempt + 1 >= attempts or not deadline.may_retry_after(delay):
+                    break
+                time.sleep(delay)
         return Outcome(ok=False, provider=provider, refused=True, errors=errors)
 
     # ---- the three operations a build uses

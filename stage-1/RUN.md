@@ -25,6 +25,7 @@ second or two). No other setup is needed: state is in memory and starts empty.
 | `TAVILY_API_KEY`, `TAVILY_BASE_URL` | Optional. Tavily is used only when Nimble refuses a call |
 | `LOG_LEVEL` | Python log level (default `INFO`) |
 | `DOSSIER_CALL_TIMEOUT`, `DOSSIER_RESEARCH_TIMEOUT` | Seconds to wait for one provider call / a research run (defaults 45/180 live, 20/30 against another endpoint) |
+| `DOSSIER_RETRY_BASE`, `DOSSIER_RETRY_HORIZON` | A refused call (429/500) is retried after `RETRY_BASE` s, doubling, at most 3 times, and never past `RETRY_HORIZON` s into a build (defaults 1/120 live, 0.1/6 against another endpoint) |
 | `DOSSIER_GATHER_WINDOW`, `DOSSIER_BUILD_CAP` | A build starts no call after `GATHER_WINDOW` s (default 120), nor one that could run past `BUILD_CAP` s (default 270) |
 
 ### Against the local mock web

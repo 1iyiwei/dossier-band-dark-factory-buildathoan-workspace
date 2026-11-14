@@ -108,6 +108,7 @@ class Builder:
         self.claims: list[Claim] = []
         self.successes = 0
         self.extract_down = False                   # every provider refused an extract this build
+        self.domain_search = None                   # "ok", "refused" or "unanswered"
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ the plan
@@ -139,16 +140,32 @@ class Builder:
                     self._gather(max_priority=1)
                     fields = self._decide()
                     unknown = self._unknown(fields)
+                self._retry_domain_search()
                 if unknown and self.claims:
                     self._check_claims(unknown)
                     fields = self._decide()
                     unknown = self._unknown(fields)
-                if unknown:
-                    self._gather(max_priority=2)
+                self._retry_domain_search()
+                if unknown or self.pages_pending():
+                    self._gather(max_priority=2 if unknown else 1)
                     fields = self._decide()
             except Cancelled:
                 return BuildResult(succeeded=False)
         return BuildResult(succeeded=self.successes > 0, fields=fields)
+
+    def _retry_domain_search(self) -> None:
+        """§4: every build makes one search, answered without error, whose query is the bare domain.
+
+        A refused attempt does not count, so it is tried again later in the build. One that went
+        unanswered may have been served, so it is never repeated.
+        """
+        if self.domain_search == "refused":
+            self._searches([self.domain])
+
+    def pages_pending(self) -> bool:
+        """Relevant search results not yet attempted (a late domain search may add some)."""
+        return any(h.priority <= 1 and h.url not in self.attempted and h.url not in self.pages
+                   for h in self.hits.values())
 
     @staticmethod
     def _unknown(fields: dict) -> list[str]:
@@ -177,6 +194,8 @@ class Builder:
         outcome = self.gateway.search("nimble", query, self.budget, self.cancelled, self.deadline, depth=depth)
         if outcome.refused and self.gateway.tavily_enabled:
             outcome = self.gateway.search("tavily", query, self.budget, self.cancelled, self.deadline, depth=depth)
+        if query == self.domain:
+            self.domain_search = "ok" if outcome.ok else "refused" if outcome.refused else "unanswered"
         if not outcome.ok:
             log.info("search %r for %s failed: %s", query, self.domain, outcome.errors[-1:] or "budget")
             return [], outcome.provider
