@@ -68,6 +68,8 @@ def test_supports(excerpt, field, value):
     ("Acme Robotics was founded in 2014 and 2015.", "founded_year"),
     ("Acme Robotics was founded in 20145.", "founded_year"),
     ("Acme Robotics was founded in Q2014.", "founded_year"),
+    ("Acme Robotics was founded in 2,014.", "founded_year"),                  # RUL-06
+    ("Acme Robotics was founded in 2014.0.", "founded_year"),                 # RUL-06
     ("Acme Robotics will become Acme Robotics Ltd, its legal name.", "legal_name"),
     ("Acme Robotics' former CEO Dana Ruiz left.", "ceo"),
     ("Acme Robotics is based in the Bay Area.", "hq_city"),
