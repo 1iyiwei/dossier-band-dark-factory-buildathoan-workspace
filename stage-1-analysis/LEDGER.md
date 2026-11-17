@@ -30,7 +30,7 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-DEL-04 | "Tavily is optional … its absence must not prevent research while Nimble answers." | 2 | AT + M | `test_R_DEL_03_*[tavily-down, tavily-rate-limited]`; measured: image started without `TAVILY_*` | passing @904e1fd |
 | R-DEL-05 | "every request to a provider goes through `web_router`: called in-process, or from a Python helper process … Calling a provider's API by any other route is not permitted." | 2 | R | code review; mock log shows only WebRouter-shaped calls | passing (review @904e1fd/1d3ccf7: no direct HTTP/SDK provider calls in app/, all via web_router, render never set) |
 | R-DEL-06 | "The stage folder's dependency manifest lists `webrouter>=0.12.0`"; install `webrouter[search,extract,research]>=0.12.0` in the Docker build. | 2 | R | manifest + Dockerfile | passing (review @904e1fd: requirements.txt webrouter[search,extract,research]>=0.12.0, installed in docker build, image has 0.12.0) |
-| R-DEL-07 | Tavily base URL passed as `provider_config={"tavily": {"api_base_url": <TAVILY_BASE_URL>}}`; Nimble reads `NIMBLE_API_KEY`/`NIMBLE_BASE_URL`. | 2 | R + AT | review; any Tavily call appears in the mock log | passing @904e1fd (AT part); review part pending Reviewer |
+| R-DEL-07 | Tavily base URL passed as `provider_config={"tavily": {"api_base_url": <TAVILY_BASE_URL>}}`; Nimble reads `NIMBLE_API_KEY`/`NIMBLE_BASE_URL`. | 2 | R + AT | review; any Tavily call appears in the mock log | passing @904e1fd (AT) + review PASS: provider_config tavily.api_base_url built from TAVILY_BASE_URL; Tavily calls observed at the mock |
 | R-DEL-08 | Limits "CPU 2 vCPU", "Memory 3 GiB". | 2 | M | `up.sh` runs with `--cpus 2 --memory 3g`; whole suite passes | passing @904e1fd |
 | R-DEL-09 | "Start to first healthy response 60 s". | 2, 3.2 | M | `up.sh` prints start→healthy seconds, fails if > 60 | passing @904e1fd |
 | R-DEL-10 | "Concurrent requests up to 50 in flight". | 2 | AT | `test_R_CON_02_R_DEL_10_fifty_in_flight` | passing @904e1fd |
@@ -124,7 +124,7 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-AUTH-08 | "For a user seeded by the fixture, `user_id` is that user's `id` in the fixture." | 6 | AT | `test_R_RST_07_R_AUTH_08_*` | passing @904e1fd |
 | R-AUTH-09 | "Every other endpoint requires a bearer token … A request … that lacks a valid token is 401 `unauthenticated`, even when it also lacks a required `Idempotency-Key`." | 6 | AT | `test_R_AUTH_09_*` | passing @904e1fd |
 | R-AUTH-10 | "Tokens do not expire. An account may have multiple valid tokens and concurrent sessions." | 6 | AT | `test_R_AUTH_10_*` (both) | passing @904e1fd |
-| R-AUTH-11 | "Passwords must be stored using a password-hashing function such as bcrypt, scrypt or Argon2 … Plaintext password storage is not permitted." | 6 | R + AT | code review; `test_R_AUTH_11_*` (no plaintext in export) | passing @904e1fd (AT part); review part pending Reviewer |
+| R-AUTH-11 | "Passwords must be stored using a password-hashing function such as bcrypt, scrypt or Argon2 … Plaintext password storage is not permitted." | 6 | R + AT | code review; `test_R_AUTH_11_*` (no plaintext in export) | passing @904e1fd (AT) + review PASS: hashlib.scrypt N=2^14 r=8 p=1, random 16-byte salt, compare_digest; no plaintext in export |
 | R-AUTH-13 | Missing signup/login fields → 422; wrong types → 400. | 5, 6 | AT | `test_R_AUTH_13_*`, `test_R_ERR_02_auth_*` (RUL-33) | passing @904e1fd |
 | R-CON-01 | Concurrent signups with one email: exactly one 201. | 6, 11 | AT | `test_R_CON_01_concurrent_signup_same_email` | passing @904e1fd |
 
@@ -235,7 +235,7 @@ tests (`test_oracle_unit.py`, which reproduce every example the specification gi
 ## Coverage summary (evidence revision 904e1fd; Reviewer verdicts folded in)
 
 - Rows: 157.
-- passing: 155 (acceptance-tested or measured against 904e1fd: 271/271; review-only rows R-DEL-05, R-DEL-06, R-DEL-12, R-BLD-05, R-CLK-07 passed by the Reviewer on 904e1fd/1d3ccf7). The review parts of R-DEL-07 (Tavily `provider_config`) and R-AUTH-11 (password hashing) got no explicit Reviewer verdict yet; their acceptance parts pass.
+- passing: 155 (acceptance-tested or measured against 904e1fd: 271/271; review-only rows R-DEL-05, R-DEL-06, R-DEL-12, R-BLD-05, R-CLK-07 passed by the Reviewer on 904e1fd/1d3ccf7). R-DEL-07 and R-AUTH-11: acceptance parts pass and the Reviewer passed their review parts.
 - ruled: 1 (R-DEL-13 needs nothing).
 - failing: 1: R-EVD-11 (new case for Reviewer finding F4; fails on 904e1fd for fenwick-orchards; work item 5).
 - open: 0. Untested without a recorded reason: 0.
