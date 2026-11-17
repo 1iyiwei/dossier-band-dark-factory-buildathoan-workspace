@@ -282,6 +282,49 @@ EXPECTED["wrenfield-audio.test"] = {0: {
     "legal_name": "Wrenfield Audio AG", "hq_city": "Zürich", "ceo": "Maria Elena Costa",
     "founded_year": 1979, "headcount_range": "201-500", "funding_total": 850000}}
 
+# ---------------------------------------------------------------- 10. more than 10 pages: facts rank below the domain query's top 10
+_FENWICK_TOPICS = [
+    ("varieties", "apple varieties", "Fenwick Orchards grows heritage apple varieties on terraced slopes."),
+    ("pears", "pear blocks", "Fenwick Orchards keeps its pear blocks on the cooler northern terraces."),
+    ("cider", "cider pressing", "Fenwick Orchards presses its windfall fruit into cloudy cider each autumn."),
+    ("bees", "pollination", "Fenwick Orchards rents hives from local beekeepers during blossom."),
+    ("frost", "frost protection", "Fenwick Orchards runs wind machines on cold spring nights."),
+    ("soil", "soil care", "Fenwick Orchards plants clover between rows to feed the soil."),
+    ("pruning", "winter pruning", "Fenwick Orchards prunes by hand through the dormant season."),
+    ("tours", "orchard tours", "Fenwick Orchards opens its lanes to visitors on blossom weekends."),
+    ("shop", "farm shop", "Fenwick Orchards sells juice and dried rings at its roadside shop."),
+    ("water", "irrigation", "Fenwick Orchards waters young trees with drip lines fed from a pond."),
+]
+
+
+def _fenwick_filler(slug, topic, lead):
+    lines = [lead]
+    for _ in range(3):
+        lines.append(f"Read more about {topic} at fenwick-orchards.test, the home of Fenwick Orchards.")
+        lines.append(f"Fenwick Orchards and fenwick-orchards.test share notes on {topic} with growers.")
+    return page(f"https://fenwick-orchards.test/{slug}", "\n".join(lines),
+                title=f"Fenwick Orchards fenwick-orchards.test {topic}")
+
+
+COMPANIES["fenwick-orchards.test"] = {
+    "names": ["Fenwick Orchards"],
+    "pages": [_fenwick_filler(*t) for t in _FENWICK_TOPICS] + [
+        page("https://grower-gazette.test/profiles/marchetti", "\n".join([
+            "Fenwick Orchards CEO: Odile Marchetti.",
+            "Fenwick Orchards was founded in 1952.",
+            "Fenwick Orchards LLC is the registered company that owns the groves.",
+        ]), kind="news", title="Grower profile: Odile Marchetti"),
+        page("https://harvest-ledger.test/notes/hood-river", "\n".join([
+            "Fenwick Orchards is headquartered in Hood River.",
+            "Fenwick Orchards employs 340 people at harvest.",
+            "Fenwick Orchards has raised $6M from a farm fund.",
+        ]), kind="news", title="Harvest notes"),
+    ],
+}
+EXPECTED["fenwick-orchards.test"] = {0: {
+    "legal_name": "Fenwick Orchards LLC", "hq_city": "Hood River", "ceo": "Odile Marchetti",
+    "founded_year": 1952, "headcount_range": "201-500", "funding_total": 6000000}}
+
 # A domain with no page anywhere in the corpus: the build completes ready with every field unknown.
 UNKNOWN_DOMAIN = "nowhere-at-all.test"
 EXPECTED[UNKNOWN_DOMAIN] = {0: {f: None for f in ["legal_name", "hq_city", "ceo", "founded_year",

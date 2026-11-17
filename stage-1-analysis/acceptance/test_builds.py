@@ -210,6 +210,34 @@ def test_R_DEL_03_R_ERR_05_degraded_providers_still_research(fresh, label, fault
     assert not errs, errs
 
 
+F4_DOMAINS = ["talloway-systems.test", "sablewood-logistics.test", "vantorra-health.test",
+              "meridel-foods.test", "wrenfield-audio.test", "ledgerline-partners.test",
+              "quorra-dynamics.test", "fenwick-orchards.test"]
+
+
+@pytest.mark.corpus
+@pytest.mark.parametrize("domain", F4_DOMAINS)
+def test_R_EVD_11_extract_and_research_refused(fresh, domain):
+    """Reviewer finding F4 / RUL-34: only Nimble search answers. Every field the evidence (full
+    page texts) supports must still be known, within 80 units, with valid citations.
+    (orrin-bay is excluded: its research-only claims are not evidence when research is refused.)"""
+    api, mock = fresh
+    mock.fault("nimble", ["extract", "research"], "error")
+    mock.fault("tavily", ["extract", "search"], "error")
+    tok = api.token(0)
+    b = api.build(tok, domain, timeout=60)
+    assert b["state"] == "ready", b
+    log = mock.log()
+    errs = check_expected(b, domain, 0) + citation_problems(b, domain, log)
+    if b["spent_units"] != total_cost(log):
+        errs.append(f"spent_units {b['spent_units']} != {total_cost(log)}")
+    if total_cost(log) > 80:
+        errs.append(f"spent {total_cost(log)} > 80")
+    if len(domain_queries(log, domain)) != 1:
+        errs.append(f"domain queries: {len(domain_queries(log, domain))}")
+    assert not errs, errs
+
+
 @pytest.mark.corpus
 def test_R_COST_06_slow_provider_costs_are_counted(fresh):
     api, mock = fresh
@@ -240,7 +268,14 @@ def test_R_ERR_05_weather_no_5xx_and_rules_hold(fresh):
     assert sum(api.get(tok, d).json()["spent_units"] for d in domains) == total_cost(log)
     for d in domains:
         n = len(domain_queries(log, d))
-        assert n == (1 if api.get(tok, d).json()["state"] == "ready" else 0), (d, n)
+        state = api.get(tok, d).json()["state"]
+        if state == "failed":
+            assert n == 0, (d, n)
+        else:
+            # RUL-28: exactly one, or zero when every domain-query attempt was refused
+            refused = [e for e in log if e.get("method") == "search" and e.get("query") == d
+                       and isinstance(e.get("status"), int) and e["status"] >= 400]
+            assert n == 1 or (n == 0 and refused), (d, n, len(refused))
 
 
 def test_R_BLD_06_non_build_requests_make_no_provider_calls(fresh):

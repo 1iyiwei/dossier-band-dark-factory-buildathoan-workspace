@@ -28,14 +28,14 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-DEL-02 | "The image must run on its own with `-e PORT=<port>` and a port mapping. All runtime dependencies, initialization and seed data must work within that single container. Compose configuration is not used." | 2 | M | `up.sh` runs the image alone with `-e PORT=8000 -p` | passing @904e1fd |
 | R-DEL-03 | "every service must be able to research companies using Nimble alone." | 2 | AT | `test_R_DEL_03_*[tavily-down]` (expected fields unchanged) | passing @904e1fd |
 | R-DEL-04 | "Tavily is optional … its absence must not prevent research while Nimble answers." | 2 | AT + M | `test_R_DEL_03_*[tavily-down, tavily-rate-limited]`; measured: image started without `TAVILY_*` | passing @904e1fd |
-| R-DEL-05 | "every request to a provider goes through `web_router`: called in-process, or from a Python helper process … Calling a provider's API by any other route is not permitted." | 2 | R | code review; mock log shows only WebRouter-shaped calls | ruled (review) — pending Reviewer verdict |
-| R-DEL-06 | "The stage folder's dependency manifest lists `webrouter>=0.12.0`"; install `webrouter[search,extract,research]>=0.12.0` in the Docker build. | 2 | R | manifest + Dockerfile | ruled (review) — pending Reviewer verdict |
+| R-DEL-05 | "every request to a provider goes through `web_router`: called in-process, or from a Python helper process … Calling a provider's API by any other route is not permitted." | 2 | R | code review; mock log shows only WebRouter-shaped calls | passing (review @904e1fd/1d3ccf7: no direct HTTP/SDK provider calls in app/, all via web_router, render never set) |
+| R-DEL-06 | "The stage folder's dependency manifest lists `webrouter>=0.12.0`"; install `webrouter[search,extract,research]>=0.12.0` in the Docker build. | 2 | R | manifest + Dockerfile | passing (review @904e1fd: requirements.txt webrouter[search,extract,research]>=0.12.0, installed in docker build, image has 0.12.0) |
 | R-DEL-07 | Tavily base URL passed as `provider_config={"tavily": {"api_base_url": <TAVILY_BASE_URL>}}`; Nimble reads `NIMBLE_API_KEY`/`NIMBLE_BASE_URL`. | 2 | R + AT | review; any Tavily call appears in the mock log | passing @904e1fd (AT part); review part pending Reviewer |
 | R-DEL-08 | Limits "CPU 2 vCPU", "Memory 3 GiB". | 2 | M | `up.sh` runs with `--cpus 2 --memory 3g`; whole suite passes | passing @904e1fd |
 | R-DEL-09 | "Start to first healthy response 60 s". | 2, 3.2 | M | `up.sh` prints start→healthy seconds, fails if > 60 | passing @904e1fd |
 | R-DEL-10 | "Concurrent requests up to 50 in flight". | 2 | AT | `test_R_CON_02_R_DEL_10_fifty_in_flight` | passing @904e1fd |
 | R-DEL-11 | "Per-request timeout 5 s (10 s for `POST /_test/reset`)". | 2 | AT | client timeouts 5 s (10 s reset/import/export) on every request | passing @904e1fd |
-| R-DEL-12 | "Outbound network … at run time, only the provider endpoints this specification lists"; "Runtime assets and dependencies must be included in the image." | 2 | R | Dockerfile/code review (no runtime downloads) | ruled (review) — pending Reviewer verdict |
+| R-DEL-12 | "Outbound network … at run time, only the provider endpoints this specification lists"; "Runtime assets and dependencies must be included in the image." | 2 | R | Dockerfile/code review (no runtime downloads) | passing (review + measurement @904e1fd: healthy with --network none; on an --internal network reaching only the mock builds ready; PyPI egress blocked) |
 | R-DEL-13 | "Disk ephemeral; state need not survive a container restart." | 2 | — | permissive; nothing to verify | ruled |
 
 ## §3 Runtime contract
@@ -62,7 +62,7 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-CLK-04 | "A `now` earlier than the clock's current time is 422 `validation_failed` and changes nothing." | 3.4 | AT | `test_R_CLK_04_*` | passing @904e1fd |
 | R-CLK-05 | "`now` is an RFC 3339 timestamp with an explicit offset." | 3.4 | AT | `test_R_CLK_05_*` (RUL-13) | passing @904e1fd |
 | R-CLK-06 | "`POST /_test/clock` requires no authentication." | 3.4 | AT | `test_R_CLK_02_R_CLK_06_*` | passing @904e1fd |
-| R-CLK-07 | "Before the first reset the clock follows the system time." | 3.4 | R | review (RUL-35) | ruled (review) — pending Reviewer verdict |
+| R-CLK-07 | "Before the first reset the clock follows the system time." | 3.4 | R | review (RUL-35) | passing (review @904e1fd: without reset, researched_at followed system time) |
 | R-CLK-08 | Equal `now` accepted. | 3.4 | AT | `test_R_CLK_08_*` (RUL-13) | passing @904e1fd |
 | R-CLK-09 | `Z` accepted as an explicit offset. | 3.4 | AT | `test_R_CLK_09_*` (RUL-13) | passing @904e1fd |
 | R-CNV-01 | "Requests and responses are `application/json; charset=utf-8`." | 3.5 | AT | `test_R_CNV_01_*` | passing @904e1fd |
@@ -93,9 +93,10 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-EVD-05 | "The claim is asserted only when its citation supports it. A field is `unknown` when no evidence supports a value for it, even when a research answer claims one." | 4 Evidence | AT | orrin-bay `funding_total` unknown | passing @904e1fd |
 | R-EVD-06 | Evidence includes "every claim that a `nimble` research run for the company asking for all six fields answers with" | 4 Evidence | AT | `test_R_EVD_06_*`, orrin-bay ceo/headcount (RUL-09) | passing @904e1fd |
 | R-EVD-07 | "When the evidence supports more than one value for a field, the field holds one of them and cites only excerpts that support that value." | 4 Evidence | AT | `test_R_EVD_07_*` (ledgerline) | passing @904e1fd |
-| R-EVD-08 | "When a build completes `ready`, each field is `known` exactly when the evidence (§4) supports a value for it." | 8 Builds | AT | `test_R_EVD_08_R_SUP_corpus_company[*]` (10 companies) | passing @904e1fd |
+| R-EVD-08 | "When a build completes `ready`, each field is `known` exactly when the evidence (§4) supports a value for it." | 8 Builds | AT | `test_R_EVD_08_R_SUP_corpus_company[*]` (11 companies incl. fenwick-orchards: >10 pages, facts only reachable by other queries naming the company) | passing @904e1fd |
 | R-EVD-09 | Evidence is each page "with its full text" | 4 Evidence | AT | `test_R_EVD_09_*` (sablewood), talloway history (RUL-10) | passing @904e1fd |
 | R-EVD-10 | "The header line `Facts:` … is informative only: citations come from the prose" | 4 Pages | AT | `test_R_EVD_03_R_EVD_10_*` (quorra) | passing @904e1fd |
+| R-EVD-11 | Degraded providers: with Nimble extract + research and Tavily extract + search all refused, a `ready` build still has every field `known` that the evidence (full page texts) supports, and spends ≤ 80. | 4, 8, 9 | AT | `test_R_EVD_11_extract_and_research_refused[*]` (RUL-34, Reviewer F4) | failing @904e1fd: fenwick-orchards (12 pages, facts outside the domain query's top 10) ends ready with all six unknown, 47 of 80 units spent; the other 7 companies pass (work item 5) |
 
 ## §5 Errors
 
@@ -153,7 +154,7 @@ companies built `ready` with every expected value and only Nimble calls (R-RUN-0
 | R-BLD-02 | "A build ends in `ready` when it completed, or `failed` when none of its provider calls succeeded. A failed build leaves the fields as they were." | 8 | AT | `test_R_BLD_02_*` | passing @904e1fd |
 | R-BLD-03 | "A build's time is the clock's time when the request that started it was received." (`researched_at`) | 8 | AT | `test_R_CLK_*`, `test_R_GET_03_*`, `test_R_REF_04_*` | passing @904e1fd |
 | R-BLD-04 | "A build whose provider calls each answer within one second ends within 10 seconds of the request that started it." | 8 | AT | `test_R_BLD_04_*` | passing @904e1fd |
-| R-BLD-05 | Live providers: no give-up on a call waiting < 30 s, no time-based stop in the first 120 s, ends within 300 s. | 8 | R | code review of timeouts (live providers not reachable in tests) | ruled (review) — pending Reviewer verdict |
+| R-BLD-05 | Live providers: no give-up on a call waiting < 30 s, no time-based stop in the first 120 s, ends within 300 s. | 8 | R | code review of timeouts (live providers not reachable in tests) | passing (review @904e1fd: code reading + shortened-timing runs; not live-tested) |
 | R-BLD-06 | "Reading a dossier, listing dossiers and every other request except `POST /dossiers` and `POST /dossiers/{domain}/refresh` make no provider call." | 8 | AT | `test_R_BLD_06_*`, `test_R_RUN_03_*`, `test_R_EXP_*` (import) | passing @904e1fd |
 | R-POST-01 | "When no dossier exists … creates one, starts its first build and returns 202 `{dossier_id, domain, state: building}`" | 8 | AT | `test_R_POST_01_*` | passing @904e1fd |
 | R-POST-02 | "When a dossier already exists … starts no build and returns 200 with that dossier's `dossier_id`, `domain` and current `state`." | 8 | AT | `test_R_POST_02_*`, `test_R_REF_02_*` (RUL-26) | passing @904e1fd |
@@ -231,9 +232,10 @@ tests (`test_oracle_unit.py`, which reproduce every example the specification gi
 | R-SUP-12 | A company with no evidence: `ready`, all fields unknown | A, 8 | `nowhere-at-all.test` | passing @904e1fd |
 | R-SUP-13 | The analyst oracle reproduces every example in §4 and Appendix A | A | `test_oracle_unit.py` (offline) | passing |
 
-## Coverage summary (evidence revision 904e1fd)
+## Coverage summary (evidence revision 904e1fd; Reviewer verdicts folded in)
 
-- Rows: 156.
-- passing: 150 (acceptance-tested or measured against 904e1fd; 2 of them also have a review part pending: R-DEL-07, R-AUTH-11).
-- ruled: 6 (R-DEL-13 needs nothing; R-DEL-05, R-DEL-06, R-DEL-12, R-BLD-05, R-CLK-07 are review-only, pending the Reviewer's verdict).
-- failing: 0. open: 0. untested without a recorded reason: 0.
+- Rows: 157.
+- passing: 155 (acceptance-tested or measured against 904e1fd: 271/271; review-only rows R-DEL-05, R-DEL-06, R-DEL-12, R-BLD-05, R-CLK-07 passed by the Reviewer on 904e1fd/1d3ccf7). The review parts of R-DEL-07 (Tavily `provider_config`) and R-AUTH-11 (password hashing) got no explicit Reviewer verdict yet; their acceptance parts pass.
+- ruled: 1 (R-DEL-13 needs nothing).
+- failing: 1: R-EVD-11 (new case for Reviewer finding F4; fails on 904e1fd for fenwick-orchards; work item 5).
+- open: 0. Untested without a recorded reason: 0.
