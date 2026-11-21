@@ -38,6 +38,11 @@ def citable_sentences(prose: str, *, drop_last: bool = False) -> list[str]:
     return result
 
 
+def looks_like_header_line(text: str) -> bool:
+    """Whether the text has the form of a header line (`Name: value`)."""
+    return bool(_HEADER_LINE.match(text.strip()))
+
+
 def appears_in(excerpt: str, prose: str) -> bool:
     """Whether the excerpt is copied from the prose, up to runs of whitespace."""
     return collapse_whitespace(excerpt) in collapse_whitespace(prose)

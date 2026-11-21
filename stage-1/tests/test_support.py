@@ -2,7 +2,7 @@
 import unittest
 
 from app.support import supported_value, split_sentences, values_in_format
-from app.pages import prose_of
+from app.pages import looks_like_header_line, prose_of
 
 D = "acme-robotics.test"
 
@@ -70,6 +70,14 @@ class SupportExamples(unittest.TestCase):
         self.assertEqual(prose_of("Kind: own\nFacts: {\"ceo\": \"X\"}\n\nHello there."), "Hello there.")
         self.assertEqual(prose_of("Hello: there.\nmore"), "")
         self.assertEqual(prose_of("hello there.\n\nmore"), "hello there.\n\nmore")
+
+
+class HeaderLikeTests(unittest.TestCase):
+    def test_header_form(self):
+        self.assertTrue(looks_like_header_line('Facts: {"ceo": "Dana Ruiz"}'))
+        self.assertTrue(looks_like_header_line("First-Published-By: wire.test"))
+        self.assertFalse(looks_like_header_line("Acme Robotics was founded in 2014."))
+        self.assertFalse(looks_like_header_line("Acme Robotics CEO: Sam Ortiz."))
 
 
 if __name__ == "__main__":

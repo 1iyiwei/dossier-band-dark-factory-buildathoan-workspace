@@ -10,9 +10,14 @@ Spending plan, within the 80-unit budget (§9):
      New results are extracted as in step 2.
   4. Research claims for unknown fields are checked against their page, extracted if needed.
   5. With budget left and fields still unknown, the remaining results are extracted.
+  6. Whatever budget is left goes to fields still unknown, round after round: further `lite`
+     searches with other wordings of each field (and extracts of what they find).
 When every provider refuses extracts, no more are attempted in that build: a Nimble `deep`
-search (15 units, whole page texts) for the company's name replaces step 2, and step 3's
-field searches are `deep` too, as many as the budget allows after the research run.
+search (15 units, whole page texts) naming the domain replaces step 2, the field
+searches of step 3 are cheap `lite` probes, and step 6 repeats as `deep` (or, when under
+15 units remain, `fast`) the probe whose results hold the most relevant pages still
+without text. Research is never reserved for: once it has run (or been refused), its units
+are spent like any others.
 Tavily is used only when Nimble refuses a call and a Tavily key is configured.
 
 A value is asserted only when a cited excerpt supports it by Appendix A (`support.py`).
@@ -25,24 +30,27 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
-from .pages import appears_in, citable_sentences, prose_of
+from .pages import appears_in, citable_sentences, looks_like_header_line, prose_of
 from .providers import Budget, Cancelled, Deadline, Gateway
 from .support import FIELDS, company_name, names_company, normalise_claim, supported_value, supported_values
 
 log = logging.getLogger("dossier.build")
 
+# Wordings of each field for the searches that name the company; later rounds use later ones.
 FIELD_QUERY_WORDS = {
-    "legal_name": "legal name",
-    "hq_city": "headquarters",
-    "ceo": "CEO",
-    "founded_year": "founded",
-    "headcount_range": "employees",
-    "funding_total": "funding raised",
+    "legal_name": ("legal name", "registered name", "legal entity"),
+    "hq_city": ("headquarters", "headquartered in", "based in"),
+    "ceo": ("CEO", "chief executive", "chief executive officer"),
+    "founded_year": ("founded", "established", "incorporated"),
+    "headcount_range": ("employees", "staff", "workforce"),
+    "funding_total": ("funding raised", "investment", "raised"),
 }
 RESEARCH_COST = 25
 DEEP_SEARCH_COST = 15
+FAST_SEARCH_COST = 5
 MAX_CITATIONS = 5
 SNIPPET_MAY_BE_CUT = 250   # a snippet at least this long may end mid-sentence
+PARTIAL_MAY_BE_CUT = 1400  # likewise a `fast` result's truncated page body
 WORKERS = 8
 
 RESEARCH_SCHEMA = {
@@ -98,6 +106,7 @@ class Builder:
         self.gateway = gateway
         self.domain = domain
         self.name = company_name(domain).title()
+        self.domain_variant = f"{domain} {self.name}"   # finds what the domain query finds
         self.budget = budget
         self.cancelled = cancelled
         self.deadline = deadline
@@ -109,6 +118,11 @@ class Builder:
         self.successes = 0
         self.extract_down = False                   # every provider refused an extract this build
         self.domain_search = None                   # "ok", "refused" or "unanswered"
+        self.research_state = None                  # "ok", "refused" or "unanswered"
+        self.partials: dict[str, tuple[str, str]] = {}   # url -> (provider, truncated served text)
+        self.query_urls: dict[str, list[str]] = {}  # query -> URLs its search returned
+        self.query_field: dict[str, str] = {}       # field query -> its field
+        self.searched: set[tuple[str, str]] = set() # (query, depth) already tried
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ the plan
@@ -120,21 +134,17 @@ class Builder:
                 self._searches([self.domain, self.name])
                 self._gather(max_priority=1)
                 if self.extract_down:
-                    # No page text from extracts: a deep search serves whole pages instead.
-                    self._searches([self.name], depth="deep")
+                    # No page text from extracts: a deep search serves whole pages instead. It
+                    # names the domain, which ranks the company's pages first, but is not the bare
+                    # domain, whose search is made only once.
+                    self._searches([self.domain_variant], depth="deep")
                 fields = self._decide()
                 unknown = self._unknown(fields)
                 if unknown:
                     research = None
                     if self.budget.remaining >= RESEARCH_COST + len(unknown):
                         research = self.pool.submit(self._research)
-                    queries = [f"{self.name} {FIELD_QUERY_WORDS[f]}" for f in unknown]
-                    if self.extract_down:
-                        reserved = RESEARCH_COST if research is not None else 0
-                        affordable = max(0, (self.budget.remaining - reserved) // DEEP_SEARCH_COST)
-                        self._searches(queries[:affordable], depth="deep")
-                    else:
-                        self._searches(queries)
+                    self._searches([self._field_query(f, 0) for f in unknown])
                     if research is not None:
                         research.result()
                     self._gather(max_priority=1)
@@ -149,9 +159,89 @@ class Builder:
                 if unknown or self.pages_pending():
                     self._gather(max_priority=2 if unknown else 1)
                     fields = self._decide()
+                fields = self._spend_remaining(fields)
             except Cancelled:
                 return BuildResult(succeeded=False)
         return BuildResult(succeeded=self.successes > 0, fields=fields)
+
+    def _field_query(self, field_name: str, round_: int) -> str | None:
+        words = FIELD_QUERY_WORDS[field_name]
+        if round_ >= len(words):
+            return None
+        query = f"{self.name} {words[round_]}"
+        self.query_field.setdefault(query, field_name)
+        return query
+
+    def _spend_remaining(self, fields: dict) -> dict:
+        """Rounds of further searches for the fields still unknown, while the budget lasts.
+
+        Each round runs queries not tried before, so the loop ends: when every field is known,
+        the budget or the gathering window runs out, or nothing new is left to ask.
+        """
+        unknown = self._unknown(fields)
+        if unknown and self.research_state == "refused" and self.budget.remaining >= RESEARCH_COST:
+            # A refused run cost nothing; its claims may be the only evidence for a field.
+            self._research()
+            if self.claims:
+                self._check_claims(unknown)
+            fields = self._decide()
+        round_ = 1
+        while True:
+            unknown = self._unknown(fields)
+            if not unknown or self.budget.remaining <= 0:
+                return fields
+            # Rotate the order so that, when the budget runs short, no field is always last.
+            shift = round_ % len(unknown)
+            unknown = unknown[shift:] + unknown[:shift]
+            progressed = False
+            if self.extract_down:
+                progressed = self._fetch_text_by_search(unknown)
+            if not progressed:
+                queries = [q for q in (self._field_query(f, round_) for f in unknown)
+                           if q is not None and (q, "lite") not in self.searched]
+                if not queries and round_ >= max(len(w) for w in FIELD_QUERY_WORDS.values()):
+                    return fields
+                if queries:
+                    self._searches(queries)
+                    self._gather(max_priority=2)
+                    progressed = True
+                round_ += 1
+            if not progressed:
+                continue
+            fields = self._decide()
+            if self.deadline.elapsed() >= self.deadline.gather_window:
+                return fields
+
+    def _fetch_text_by_search(self, unknown: list[str]) -> bool:
+        """With extracts refused: repeat as deep (or fast) the probe that would bring the most text.
+
+        A probe is a lite search already run; the same query at a deeper level returns the same
+        pages with their text. Probes for unknown fields come first, then the one whose results
+        include the most relevant pages still without full text.
+        """
+        if self.budget.remaining >= DEEP_SEARCH_COST:
+            depth = "deep"
+        elif self.budget.remaining >= FAST_SEARCH_COST:
+            depth = "fast"
+        else:
+            return False
+        best, best_key = None, None
+        for query, urls in self.query_urls.items():
+            if query == self.domain:
+                query = self.domain_variant   # the bare domain is searched only once
+            if (query, depth) in self.searched or (query, "deep") in self.searched:
+                continue
+            missing = [u for u in urls if u not in self.pages and self.hits[u].priority <= 1
+                       and (depth == "deep" or u not in self.partials)]
+            if not missing:
+                continue
+            key = (self.query_field.get(query) in unknown, len(missing))
+            if best_key is None or key > best_key:
+                best, best_key = query, key
+        if best is None:
+            return False
+        self._searches([best], depth=depth)
+        return True
 
     def _retry_domain_search(self) -> None:
         """§4: every build makes one search, answered without error, whose query is the bare domain.
@@ -180,15 +270,21 @@ class Builder:
     def _searches(self, queries: list[str], depth: str = "lite") -> None:
         """Run the searches side by side; their results join the hits in query order.
 
-        A `deep` search serves each result's whole text, which is kept as the page.
+        A `deep` search serves each result's whole text, which is kept as the page; a `fast`
+        one serves the start of it, kept until the whole text arrives.
         """
+        self.searched.update((query, depth) for query in queries)
         futures = [self.pool.submit(self._search, query, depth) for query in queries]
-        for future in futures:
+        for query, future in zip(queries, futures):
             hits, provider = future.result()
+            if hits and depth == "lite":
+                self.query_urls.setdefault(query, [hit.url for hit in hits])
             for hit in hits:
                 self.hits.setdefault(hit.url, hit)
                 if depth == "deep" and hit.url not in self.pages and hit.snippet:
                     self.pages[hit.url] = Page(hit.url, provider, prose_of(hit.snippet))
+                elif depth == "fast" and hit.snippet:
+                    self.partials.setdefault(hit.url, (provider, hit.snippet))
 
     def _search(self, query: str, depth: str) -> tuple[list[SearchHit], str]:
         outcome = self.gateway.search("nimble", query, self.budget, self.cancelled, self.deadline, depth=depth)
@@ -245,6 +341,7 @@ class Builder:
         query = (f"Company profile of {self.domain}: legal_name, hq_city, ceo, founded_year, "
                  f"headcount_range, funding_total")
         outcome = self.gateway.research(query, RESEARCH_SCHEMA, self.budget, self.cancelled, self.deadline)
+        self.research_state = "ok" if outcome.ok else "refused" if outcome.refused else "unanswered"
         if not outcome.ok:
             log.info("research for %s failed: %s", self.domain, outcome.errors[-1:] or "budget")
             return
@@ -284,6 +381,10 @@ class Builder:
             page = self.pages.get(url)
             if page is not None:
                 sentences, provider = citable_sentences(page.prose), page.provider
+            elif url in self.partials:
+                # The start of the served text: header lines, then prose cut off at some point.
+                provider, partial = self.partials[url]
+                sentences = citable_sentences(prose_of(partial), drop_last=len(partial) >= PARTIAL_MAY_BE_CUT)
             else:
                 # A lite snippet is the start of the page's prose, and may stop mid-sentence.
                 cut = len(hit.snippet) >= SNIPPET_MAY_BE_CUT
@@ -318,6 +419,8 @@ class Builder:
         page = self.pages.get(claim.url) or self.cited_pages.get(claim.url)
         if page is not None and not appears_in(claim.excerpt, page.prose):
             return None   # not in the page's prose (a header line, or text the page does not hold)
+        if page is None and looks_like_header_line(claim.excerpt):
+            return None   # without the page, at least refuse what has the form of a header line
         return value
 
     @staticmethod
