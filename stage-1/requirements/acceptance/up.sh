@@ -9,7 +9,7 @@
 #      SVC_PORT (18001), MOCK_PORT (18081), KEEP=1 to leave the containers running.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KICKOFF="${KICKOFF:-$(cd "$HERE/../../../../sf-buildathon-2026" && pwd)}"
+KICKOFF="${KICKOFF:-$(cd "$HERE/../../../../../sf-buildathon-2026" && pwd)}"
 SUFFIX="${SUFFIX:-analyst}"
 SVC_PORT="${SVC_PORT:-18001}"
 MOCK_PORT="${MOCK_PORT:-18081}"

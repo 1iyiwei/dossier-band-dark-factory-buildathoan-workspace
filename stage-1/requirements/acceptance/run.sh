@@ -26,7 +26,7 @@ done
 
 pick_python() {
   if [[ -n "${PYTHON:-}" ]]; then echo "$PYTHON"; return; fi
-  local kick="${KICKOFF:-$HERE/../../../../sf-buildathon-2026}/.venv/bin/python"
+  local kick="${KICKOFF:-$HERE/../../../../../sf-buildathon-2026}/.venv/bin/python"
   for p in "$kick" python3; do
     if command -v "$p" >/dev/null 2>&1 && "$p" -c "import pytest, httpx" 2>/dev/null; then
       echo "$p"; return

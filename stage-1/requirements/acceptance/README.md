@@ -9,7 +9,7 @@ IDs it covers (see `../LEDGER.md`; rulings in `../RULINGS.md`).
 From this folder, with Docker running:
 
 ```sh
-./up.sh --build ../../stage-1          # build the service image from stage-1/ and test it
+./up.sh --build ../..                 # build the service image from stage-1/ and test it
 ./up.sh <service-image-tag>            # or test an existing image
 ./up.sh <image> -k idempotency -x      # extra args go to pytest
 ```
