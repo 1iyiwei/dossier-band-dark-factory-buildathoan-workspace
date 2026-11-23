@@ -1,7 +1,7 @@
 # UX Reviewer
 
 Harness: Claude Code
-Model: claude-sonnet-5-5
+Model: claude-haiku-5-5
 Effort: medium
 
 You judge the deliverable as its users experience it, by driving it, not by reading its

@@ -26,7 +26,7 @@ has passing evidence or a recorded ruling.
 | Analyst | `@hack/analyst` | Claude Code | `claude-sonnet-5-5` | high | Requirement ledger, rulings on ambiguities, black-box acceptance tests |
 | Implementer | `@hack/implementer` | Claude Code | `claude-sonnet-5-5` | high | Source, Dockerfile, RUN.md |
 | Reviewer | `@hack/reviewer` | Claude Code | `claude-sonnet-5-5` | medium | Clean-clone build, all checks run independently, measured limits; accept or reject |
-| UX Reviewer | `@hack/ux-reviewer` | Claude Code | `claude-sonnet-5-5` | medium | Every named UI state at 375 px and desktop; exploratory API probing when there is no UI |
+| UX Reviewer | `@hack/ux-reviewer` | Claude Code | `claude-haiku-5-5` | medium | Every named UI state at 375 px and desktop; exploratory API probing when there is no UI |
 
 ## Mechanisms (all in the mandates)
 
@@ -67,8 +67,10 @@ has passing evidence or a recorded ruling.
      Reasoning effort as in the table (they must match the mandate's header).
    - Instructions: link the seat's `mandates/<seat>.md`.
    - Working directory: the absolute path of the result repository.
-   - Claude customizations: your Claude setup; MCP servers: only Band's;
-     Permission mode: Auto.
+   - Claude customizations: your Claude setup (it carries the sign-in),
+     but with no personal rule, e.g. "don't commit" in your CLAUDE.md, that
+     covers the seats: Claude Code's permission check enforces it;
+     MCP servers: only Band's; Permission mode: Auto.
    - Run **Test runtime** before **Create agent**, and again right before a
      dispatch (an expired sign-in stops a seat at its first turn).
 2. If your Band owner name is not `hack`, replace `@hack/` in the mandates.
@@ -91,7 +93,9 @@ has passing evidence or a recorded ruling.
    > the band. Resolve everything within the band. Do not ask me anything;
    > record any blocker with its evidence in your final report.
 
-## How it caught bad work (this run)
+## How it caught bad work
+
+### Stage 1
 
 | When (UTC) | Who | What | Fix |
 |---|---|---|---|
@@ -105,23 +109,45 @@ The shipped checks passed from the first revision on; every finding above came
 from the specification, not from a failing shipped test. The Analyst's ledger
 for stage 1 has 157 rows and 36 rulings.
 
+### Stage 2
+
+| When (UTC) | Who | What | Fix |
+|---|---|---|---|
+| Nov 22 | Analyst | **REJECT tree `a0874386`**: its acceptance suite (394/406) found 8 rows where pages cited by research weren't read | Implementer and Reviewer traced it to the mock web, not the builder (mock research returns only the first entry per field). The Analyst withdrew it with a ruling (RUL-S2-19) and fixed its corpus. The Implementer still changed the read order so cited and company pages are read first within the 80-unit budget (`c02769e`) |
+| Nov 23 16:52 | Reviewer | **CONDITIONAL ACCEPT `c02769e`**: shipped checks pass in normal and isolated mode, code review clean; condition: the ledger must close | Analyst closed the ledger |
+| Nov 23 17:27–17:37 | Coordinator → Reviewer, UX Reviewer | Refused to close with 14 review-only ledger rows open; asked for evidence or a ruling for each | Evidence posted for every row; stage 2 closed 17:38 |
+
+Stage 2 final: source `c02769e`, ledger 261 rows (257 passing, 4 ruled, 0
+open), Analyst suite 406/406 including 61 browser tests at 375 and 1280 px and
+an upgrade from the real stage-1 image; UX Reviewer 58/58 + 28/28 at phone and
+desktop sizes.
+
 ## Measured cost and time
 
 Cost is Band's list-price estimate (`band usage`), not a bill.
 
-| Seat | Tokens | Estimate |
+| Seat | Stage 1 | Stage 2 |
 |---|---|---|
-| Implementer | 30.8M | $15.17 |
-| Analyst | 21.0M | $13.11 |
-| Reviewer | 21.3M | $10.87 |
-| Coordinator | 9.0M | $3.61 |
-| UX Reviewer | 5.9M | $2.04 |
-| **Stage 1 total** | **88.1M** | **$44.81** |
+| Implementer | $16.42 | $10.11 |
+| Analyst | $13.11 | $9.36 |
+| Reviewer | $10.87 | $1.73 |
+| Coordinator | $4.58 | $1.46 |
+| UX Reviewer | $2.04 | $0.12 |
+| **Room total** | **$47.02** (89.2M tokens) | **$22.79** (92.0M tokens) |
+
+Each stage ran in its own room (`room-1.json`, `room-2.json`). Stage 2 was
+about half the cost of stage 1 on more tokens: all seats on Sonnet or Haiku,
+and a fresh room per stage.
 
 Active time, from the room log: about 46 minutes on Nov 13 (23:24–00:10 UTC),
 13 minutes on Nov 17, and 21 minutes on Nov 21, so about **80 minutes** of
 work. The room spans Nov 13–21 because each window ended at the Claude Code
 5-hour usage limit and the run was stopped and resumed (see below).
+
+Stage 2, wall clock Nov 22 18:34 to Nov 23 17:38 UTC: 40 minutes of work by
+all seats on Nov 22 until the usage limit; intermittent Implementer work
+overnight (03:42–09:48) while the rest of the band was blocked (see below);
+then 50 minutes on Nov 23 (16:48–17:38) to acceptance and close.
 
 ## What we tried, and what it cost us
 
@@ -139,6 +165,28 @@ work. The room spans Nov 13–21 because each window ended at the Claude Code
   asking the Analyst to move its ledger from the repository root into
   `stage-1/requirements/`, as its mandate says (done in `aa17080`). This is a
   development run, not a clean hands-off run.
+- **A mandate change between stages, disclosed.** The Analyst's ledger landed
+  at the repository root because the Coordinator's first handoff told it to
+  ("Put them in …/stage-1-analysis/ (NOT inside stage-1/ …)"), overriding the
+  Analyst's own mandate. The Coordinator mandate didn't say where the
+  Analyst's files belong, so the Coordinator improvised. After stage 1 we added
+  one rule to `mandates/coordinator.md` (under "Increments"): the Analyst's
+  ledger, rulings and acceptance tests live under `requirements/` inside the
+  increment's folder and are carried forward with it. Stages 2 onward ran with
+  that rule; no other mandate changed.
+- **Human input in stage 2, disclosed:** the dispatch; one message to the
+  Coordinator after the usage limit reset (Nov 23 03:42 UTC: "The usage
+  limit has reset. Resume from where the band stopped."); a restart of all
+  five seats (16:48 UTC) after a settings fix. No other message.
+- **A personal setting blocked the band (stage 2).** The seats ran with the
+  owner's Claude setup, which carried a personal rule, "don't commit". Claude
+  Code's auto-mode permission check enforced it: every seat commit was
+  denied, and so was the CLI fallback for posting to the room. The
+  Implementer's fix report stayed in a file the room never saw, and the
+  band waited overnight. We scoped the rule to the owner's own sessions and
+  restarted the seats; they resumed by themselves and committed within a
+  minute. The mandates didn't change. Lesson: a factory seat must not
+  inherit its owner's personal instructions.
 - **From the toy practice run:** a default agent Band adds to new rooms stays
   in the room log and needs a mandate (we now check the participant list);
   commits defaulted to the human's git identity until each seat committed
@@ -146,7 +194,8 @@ work. The room spans Nov 13–21 because each window ended at the Claude Code
 
 ## Live result
 
-`dossier-runway.com.json` is stage 1 built against the live web: state
+`dossier-runway.com.json` is the highest stage built against the live web.
+From stage 1: state
 `ready`, all six fields known. Values are only as good as the evidence the
 service retrieved within its budget; for example the legal name came back as
 an operating entity's name, and total funding looks low compared with public

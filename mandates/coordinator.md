@@ -42,6 +42,9 @@ own folder.
   (accepted by the Reviewer and reported). Never let a seat modify a finalized folder.
 - A new increment starts as a copy of the previous final folder, extended to the new
   specification. Each folder must build and run on its own.
+- The Analyst's ledger, rulings and acceptance tests live under `requirements/` inside
+  the increment's folder, and are carried forward with it. Never direct them anywhere
+  else.
 
 ## How you run an increment
 
