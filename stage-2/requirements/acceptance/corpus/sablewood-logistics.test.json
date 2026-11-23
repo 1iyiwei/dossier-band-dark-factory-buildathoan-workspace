@@ -1,0 +1,29 @@
+{
+ "domain": "sablewood-logistics.test",
+ "names": [
+  "Sablewood Logistics"
+ ],
+ "pages": [
+  {
+   "url": "https://sablewood-logistics.test/report",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Sablewood Logistics annual report",
+   "text": "Warehousing has changed more in the last decade than in the fifty years before it. Racking that once held pallets for months now turns over its contents every few days. Pick paths are planned by software and walked by people wearing scanners on their wrists. Cross docking removes storage entirely for goods that arrive and leave the same day. Cold chain sites keep separate zones for chilled, frozen and ambient products. Every door on a loading bay has a booking calendar shared with hauliers. Late arrivals ripple through the day and push evening shifts into overtime. Yard management tools track trailers that wait outside before they reach a door. Returns are a growing share of volume and need their own inspection lines. Packaging rules differ between countries and between retailers in the same country. Customs paperwork for cross border shipments is still partly printed on paper. Insurers ask for temperature logs, seal numbers and photographs at handover. A missing photograph can turn a routine claim into a long dispute between firms. Network planners decide where to put depots using years of order history. A depot close to a motorway junction saves minutes on every single trip it serves. Land near junctions is expensive, so planners trade rent against transport cost. Automation is spreading from large hubs to medium sized regional depots. Robotic shuttles move totes between storage and pick stations without rest. The best operations still depend on supervisors who know every aisle by heart. Training new staff quickly matters because seasonal peaks need extra hands. Good depots publish simple rules and measure everything that can be counted.\nSablewood Logistics Ltd is the registered company behind the depot network.\nsablewood-logistics.test lists its head office in Den Haag.\nSablewood Logistics CEO: Jonas Ek.\nsablewood-logistics.test was founded in 2008.\nSablewood Logistics has a headcount of 10,500.\nSablewood Logistics has raised 750 thousand US dollars.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "sablewood-logistics.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

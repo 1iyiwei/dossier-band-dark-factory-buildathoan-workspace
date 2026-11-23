@@ -1,0 +1,29 @@
+{
+ "domain": "vantorra-health.test",
+ "names": [
+  "Vantorra Health"
+ ],
+ "pages": [
+  {
+   "url": "https://vantorra-health.test/company",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Vantorra Health company",
+   "text": "Vantorra Health Holdings S.A. is the legal entity that operates the clinics.\nVantorra Health is based in Saint-Malo, France.\nChief Executive Officer Noor Haddad leads Vantorra Health.\nVantorra Health was incorporated in 1987.\nVantorra Health has a workforce of 51-200 employees.\nVantorra Health has raised $4.5m to date.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "vantorra-health.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

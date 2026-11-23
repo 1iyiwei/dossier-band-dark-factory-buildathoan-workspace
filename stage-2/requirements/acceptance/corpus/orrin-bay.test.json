@@ -1,0 +1,92 @@
+{
+ "domain": "orrin-bay.test",
+ "names": [
+  "Orrin Bay"
+ ],
+ "pages": [
+  {
+   "url": "https://orrin-bay.test/",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Orrin Bay",
+   "text": "Orrin Bay is headquartered in Tromsø.\nOrrin Bay designs cold-water aquaculture nets.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "orrin-bay.test"
+   }
+  },
+  {
+   "url": "https://orrin-bay.test/leadership",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Orrin Bay leadership",
+   "text": "Orrin Bay CEO: Priya Lindqvist.\nOrrin Bay employs 75 people at its net loft.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "orrin-bay.test"
+   }
+  },
+  {
+   "url": "https://orrin-bay.test/investors",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Orrin Bay investors",
+   "text": "Orrin Bay hopes to raise $9M in new funding this year.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "orrin-bay.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {
+   "0": [
+    {
+     "field": "ceo",
+     "value": "Priya Lindqvist",
+     "url": "https://orrin-bay.test/leadership",
+     "excerpt": "Orrin Bay CEO: Priya Lindqvist."
+    },
+    {
+     "field": "headcount_range",
+     "value": "51-200",
+     "url": "https://orrin-bay.test/leadership",
+     "excerpt": "Orrin Bay employs 75 people at its net loft."
+    },
+    {
+     "field": "funding_total",
+     "value": 9000000,
+     "url": "https://orrin-bay.test/investors",
+     "excerpt": "Orrin Bay hopes to raise $9M in new funding this year."
+    },
+    {
+     "field": "hq_city",
+     "value": "Tromsø",
+     "url": "https://orrin-bay.test/",
+     "excerpt": "Orrin Bay is headquartered in Tromsø."
+    }
+   ]
+  }
+ }
+}

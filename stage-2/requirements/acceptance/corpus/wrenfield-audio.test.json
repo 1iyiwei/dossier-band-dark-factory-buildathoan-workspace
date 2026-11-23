@@ -1,0 +1,47 @@
+{
+ "domain": "wrenfield-audio.test",
+ "names": [
+  "Wrenfield Audio"
+ ],
+ "pages": [
+  {
+   "url": "https://wrenfield-audio.test/",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Wrenfield Audio",
+   "text": "Wrenfield Audio AG Holdings GmbH is the registered name on file.\nWrenfield Audio, Inc. was established in 1979.\nWrenfield Audio has its registered office in Zürich.\nWrenfield Audio chief executive Maria Elena Costa signed the deal.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "wrenfield-audio.test"
+   }
+  },
+  {
+   "url": "https://audio-trade.test/wrenfield",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Wrenfield Audio",
+   "text": "Analysts wrote: \"Wrenfield Audio employs 300 people.\" Others disagreed.\nWrenfield Audio raised $850k in seed funding.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "audio-trade.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

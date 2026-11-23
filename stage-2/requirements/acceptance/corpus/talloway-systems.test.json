@@ -1,0 +1,67 @@
+{
+ "domain": "talloway-systems.test",
+ "names": [
+  "Talloway Systems"
+ ],
+ "pages": [
+  {
+   "url": "https://talloway-systems.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "About Talloway Systems",
+   "text": "Talloway Systems builds routing software for regional freight carriers.\nTalloway Systems, Inc. is the registered name of the company behind the Talloway platform.\nTalloway Systems is headquartered in Porto Alegre.\nMara Quintero has been chief executive officer of Talloway Systems since 2019.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "talloway-systems.test"
+   }
+  },
+  {
+   "url": "https://talloway-systems.test/history",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Talloway Systems history",
+   "text": "Regional freight routing is a problem of many small decisions made under uncertainty. Dispatchers balance driver hours, loading dock windows, road works and the weather. A good plan for Monday can be a poor plan by Monday noon when a ferry is cancelled. Software that helps with this work has to be fast, explainable and easy to override. Early tools printed static schedules that drivers carried in their cabs all week. Later tools used phone calls and spreadsheets that were updated by hand each evening. Modern tools ingest live position data and suggest small changes through the day. The hardest part is rarely the mathematics; it is the trust of the dispatcher. A suggestion that saves ten minutes but surprises a driver is often rejected. For that reason, routing products now show the reasons behind each suggestion. They also keep a history of overrides so that the model can learn local habits. Ports, borders and mountain passes each add their own constraints to the plan. Seasonal peaks around harvest time double the volume for a few weeks each year. Smaller carriers often share loads with competitors to fill half empty trailers. Load sharing needs a neutral marketplace with clear rules about liability. Fuel prices, tolls and emission zones change the cost of a route from week to week. Electric trucks add charging stops, which turn a routing problem into a scheduling one. Depot managers want a single screen that shows every vehicle and every promise made. Customers want an arrival time that is honest rather than one that is optimistic. The industry measures success in on time deliveries, empty miles and driver turnover. None of these numbers improves if the people using the tool do not believe it.\nTalloway Systems was founded in 2011 by two dispatchers from Curitiba.\nTalloway Systems employs roughly 1,450 people across four offices.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "talloway-systems.test"
+   }
+  },
+  {
+   "url": "https://freight-gazette.test/talloway-round",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Talloway closes round",
+   "text": "Talloway Systems has raised US$ 37.5 million in total equity funding. The company declined to comment on valuation.",
+   "facts": {
+    "funding_total": "US$37.5M"
+   },
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "freight-gazette.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}
