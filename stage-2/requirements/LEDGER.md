@@ -1,7 +1,7 @@
 # Stage 2 — Requirement ledger (Analyst)
 
 Source: `stage-2.md` (Dossier, Stage 2: competing sources and the dossier screens) on top of the
-stage-1 ledger, which is carried forward in full below (157 rows). Every carried row must keep
+stage-1 ledger, which is carried forward in full below (157 rows; 104 new, 261 in all). Every carried row must keep
 passing; their status here is `open` until the stage-2 run, with the stage-1 evidence in parentheses.
 Verification: **AT** = black-box acceptance test (HTTP) in `acceptance/`, **UI** = acceptance test in a
 real browser (Playwright, `data-testid` only), **REV** = Reviewer inspection, **UXR** = UX Reviewer
@@ -412,5 +412,5 @@ Run in the Analyst's own containers (suffix `analyst`, ports 18001/18081/18002, 
 - Part 1 (all non-browser files, incl. upgrade tests and web/429 tests): **345 passed, 0 failed**.
 - Part 2 (`test_ui_screens`, `test_ui_flows`, `test_ui_visual`, browser at 375 and 1280 px): **61 passed, 0 failed**. No skips.
 - Total **406/406**. An earlier single full run on the same tree (old corpus ordering) gave 397/406; the 9 failures were the vesper corpus defect (8, Analyst: see RUL-S2-19) and one `test_R_REF_06` failure that did not repeat (it passed in part 2 and in the earlier run on a087438; Implementer saw the same flake under load: timing of a build the test waits on, not a deterministic defect).
-- Rows: 266. passing: 257; failing: 0; ruled: 4 (R-DEL-13, R-TXT-04, R-UPG-06, R-BLD-05); open: 0. Review rows closed on the Reviewer's evidence (message a45719f7: R-WEB-01/03, R-DEL-04/05/06/07/12, R-RUN-01, R-CLK-07, R-SEL-04, R-BLD-05 ruled RUL-S2-21) and the UX Reviewer's (message 202934a9: R-UX-01..06, human parts of R-VIS-06/07/10). R-AUTH-11 review part: stage-1 PASS carried, Reviewer to confirm unchanged.
+- Rows: 261. passing: 257; failing: 0; ruled: 4 (R-DEL-13, R-TXT-04, R-UPG-06, R-BLD-05); open: 0. Review rows closed on the Reviewer's evidence (message a45719f7: R-WEB-01/03, R-DEL-04/05/06/07/12, R-RUN-01, R-CLK-07, R-SEL-04, R-BLD-05 ruled RUL-S2-21) and the UX Reviewer's (message 202934a9: R-UX-01..06, human parts of R-VIS-06/07/10). R-AUTH-11 review part: stage-1 PASS carried, Reviewer to confirm unchanged.
 - Untested without a recorded reason: 0.

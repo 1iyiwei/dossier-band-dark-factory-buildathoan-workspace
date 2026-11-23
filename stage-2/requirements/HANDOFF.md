@@ -1,6 +1,6 @@
 # Analyst handoff — stage 2 (uncommitted; written because the room message and `git commit` were denied)
 
-Folder: `stage-2/requirements/` — `LEDGER.md` (266 rows), `RULINGS.md` (RUL-S2-01..18 + stage-1 rulings),
+Folder: `stage-2/requirements/` — `LEDGER.md` (261 rows), `RULINGS.md` (RUL-S2-01..18 + stage-1 rulings),
 `acceptance/` (409 tests). Nothing outside `stage-2/requirements/` was touched.
 
 ## Ledger IDs
