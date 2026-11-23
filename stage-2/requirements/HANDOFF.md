@@ -1,10 +1,10 @@
-# Analyst handoff — stage 2 (uncommitted; written because the room message and `git commit` were denied)
+# Analyst handoff — stage 2 (superseded by LEDGER.md final coverage summary; first-run notes below are historical)
 
-Folder: `stage-2/requirements/` — `LEDGER.md` (261 rows), `RULINGS.md` (RUL-S2-01..18 + stage-1 rulings),
+Folder: `stage-2/requirements/` — `LEDGER.md` (261 rows), `RULINGS.md` (RUL-S2-01..21 + stage-1 rulings),
 `acceptance/` (409 tests). Nothing outside `stage-2/requirements/` was touched.
 
 ## Ledger IDs
-157 carried rows (status `open`, stage-1 evidence in parentheses) + 109 new:
+157 carried rows + 104 new:
 R-GEN-04, R-PGK-01..05, R-TXT-01..04, R-WEB-01..06, R-RL-01..06, R-CAN-01..12, R-SEL-01..07,
 R-STS-01..05, R-SCR-01..06, R-AUTH-14..16, R-LST-05/06, R-RES-01..03, R-DOS-01..06, R-BLD-07/08,
 R-REF-05..07, R-EVI-01/02, R-CON-04/05, R-RD-01/02, R-UNC-01..04, R-UPG-01..07, R-VIS-01..11,
