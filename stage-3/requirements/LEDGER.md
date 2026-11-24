@@ -523,3 +523,4 @@ Own containers (suffix `an3`, ports 18301/18381/18302/18303, `OLD_IMAGE` = final
 - Untested without a recorded reason: 0. Partly assumed: R3-UPG-05 is tested under RUL-S3-15 (the final stage-2 export has no build list and no Effective lines, so full stage-2 build history cannot be tested); RUL-S3-04 "page that could not be rendered" (no spec sentence, no test; Implementer and coordinator agreed to leave it unrecorded).
 - Not run by the Analyst: the harness (`harness run --track dossier`), kill/restart under the harness, isolated mode.
 
+- Analyst recount at f3dbaf6 (after the Reviewer closed R-DEL-05/06/12, R-CLK-07, R-WEB-03): 319 rows = 309 passing + 4 ruled + 6 review-only (R-UX-01..06, UX Reviewer browser evidence pending) + 0 failing + 0 open. If R-UX-01..06 close: 315 passing, 4 ruled.
