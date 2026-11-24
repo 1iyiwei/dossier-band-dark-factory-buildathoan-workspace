@@ -49,7 +49,7 @@ def test_northgate_selected_values_per_epoch():
     assert [v[e]["hq_city"]["value"] for e in range(5)] == ["Oslo", None, "Bergen", "Bergen", "Bergen"]
     assert [v[e]["founded_year"]["value"] for e in range(5)] == [2012, 2012, None, None, None]
     assert v[0]["legal_name"]["value"] == "Northgate Labs AS"
-    assert v[0]["headcount_range"]["value"] == "11-50"
+    assert [v[e]["headcount_range"]["value"] for e in range(5)] == [None, None, "51-200", "51-200", "51-200"]
     assert v[0]["executives"]["value"] == [{"title": "cfo", "name": "Ana Silva"}]
     assert v[0]["executives"]["true_from"] == "2018-05-05"
 
@@ -62,9 +62,11 @@ def test_northgate_history_and_feed():
     assert types["funding_total"] == ["initial", "change", "change"]  # e2 same value: nothing; e3 null
     assert types["hq_city"] == ["initial", "change", "change"]
     assert types["legal_name"] == ["initial"] and types["executives"] == ["initial"]
+    assert types["headcount_range"] == ["change"]       # unknown at the first build: first entry is a change
     assert [(e["field"], e["type"]) for e in sim.feed] == [
         ("hq_city", "change"), ("ceo", "change"), ("funding_total", "change"),         # e1
         ("hq_city", "change"), ("ceo", "correction"), ("founded_year", "change"),      # e2
+        ("headcount_range", "change"),
         ("ceo", "change"), ("funding_total", "change"),                                # e3
         ("ceo", "change")]                                                             # e4
     last = sim.history["funding_total"][-1]

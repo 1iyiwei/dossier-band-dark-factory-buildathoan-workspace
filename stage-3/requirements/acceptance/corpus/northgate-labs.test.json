@@ -205,6 +205,26 @@
    }
   },
   {
+   "url": "https://northgate-labs.test/jobs",
+   "kind": "own",
+   "epochs": [
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-16T00:00:00Z",
+   "true_from": "2026-03-18",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs employs about 120 people.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
    "url": "https://northgate-labs.test/facts",
    "kind": "filing",
    "epochs": [
@@ -218,7 +238,7 @@
    "published_at": "2026-01-05T00:00:00Z",
    "true_from": "2018-05-05",
    "title": "northgate-labs.test",
-   "text": "Northgate Labs AS is the legal name of the company.\nNorthgate Labs employs about 40 people.\nAna Silva is the chief financial officer of Northgate Labs.",
+   "text": "Northgate Labs AS is the legal name of the company.\nAna Silva is the chief financial officer of Northgate Labs.",
    "facts": {},
    "lineage": {
     "canonical": null,

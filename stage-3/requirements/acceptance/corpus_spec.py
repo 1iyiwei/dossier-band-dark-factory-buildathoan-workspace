@@ -599,9 +599,11 @@ COMPANIES["northgate-labs.test"] = {
             ((1,), "Northgate Labs opened an office in Bergen.", "2026-03-10"),   # no candidate
             ((2, 3, 4), "Northgate Labs is headquartered in Bergen.", "2026-01-01"),
         ], published_at="2026-01-14T00:00:00Z")
+        + _versions(_NG + "/jobs", [
+            ((2, 3, 4), "Northgate Labs employs about 120 people.", "2026-03-18"),
+        ], published_at="2026-01-16T00:00:00Z")
         + [page(_NG + "/facts", "\n".join([
             "Northgate Labs AS is the legal name of the company.",
-            "Northgate Labs employs about 40 people.",
             "Ana Silva is the chief financial officer of Northgate Labs.",
         ]), kind="filing", epochs=(0, 1, 2, 3, 4), published_at="2026-01-05T00:00:00Z",
             true_from="2018-05-05")]
