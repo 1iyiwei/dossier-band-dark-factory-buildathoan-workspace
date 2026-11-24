@@ -10,6 +10,14 @@ import re
 from decimal import Decimal, InvalidOperation
 
 FIELDS = ["legal_name", "hq_city", "ceo", "founded_year", "headcount_range", "funding_total"]
+# Stage 3: the seventh field (members cfo, coo, cto). A research run asks for FIELDS only.
+TITLES = ["cfo", "coo", "cto"]
+ALL_FIELDS = FIELDS + ["executives"]
+TITLE_STATEMENT = {
+    "cfo": ["chief financial officer", "CFO"],
+    "coo": ["chief operating officer", "COO"],
+    "cto": ["chief technology officer", "CTO"],
+}
 
 HEADCOUNT_RANGES = [
     (1, 10, "1-10"), (11, 50, "11-50"), (51, 200, "51-200"), (201, 500, "201-500"),
@@ -275,9 +283,9 @@ def _hq_values(s: str) -> list:
     return vals
 
 
-def _ceo_values(s: str, domain: str) -> list:
+def _ceo_values(s: str, domain: str, phrases=None) -> list:
     spans = find_word(s, company_name(domain))
-    for ph in STATEMENT["ceo"]:
+    for ph in (phrases or STATEMENT["ceo"]):
         spans += find_word(s, ph)
     chars = list(s)
     for a, b in spans:
@@ -342,3 +350,26 @@ def supported_value(excerpt: str, field: str, domain: str):
 def supports(excerpt: str, field: str, value, domain: str) -> bool:
     v = supported_value(excerpt, field, domain)
     return v is not None and v == value and type(v) is type(value)
+
+
+def supported_title_value(excerpt: str, title: str, domain: str):
+    """Stage 3: the person's name an excerpt supports for `title` (cfo/coo/cto): the rule of A.2
+    with the format of `ceo` and the title's own statement phrases."""
+    s = collapse(excerpt).strip()
+    if not s or not is_single_sentence(s):
+        return None
+    if not (find_word(s, company_name(domain)) or find_word(s, domain)):
+        return None
+    if not any(find_word(s, p) for p in TITLE_STATEMENT[title]):
+        return None
+    if any(find_word(s, n) for n in NEGATIONS):
+        return None
+    vals = _ceo_values(s, domain, TITLE_STATEMENT[title])
+    if not vals or len(set(vals)) != 1:
+        return None
+    return vals[0]
+
+
+def supports_title(excerpt: str, title: str, name, domain: str) -> bool:
+    v = supported_title_value(excerpt, title, domain)
+    return v is not None and v == name

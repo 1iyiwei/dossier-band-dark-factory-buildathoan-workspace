@@ -5,6 +5,6 @@ WORKDIR /srv
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
-ENV PORT=8080 PYTHONUNBUFFERED=1
+ENV PORT=8080 PYTHONUNBUFFERED=1 DOSSIER_DATA_DIR=/srv/data
 EXPOSE 8080
 CMD ["python", "-m", "app"]

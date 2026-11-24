@@ -1,0 +1,233 @@
+{
+ "domain": "northgate-labs.test",
+ "names": [
+  "Northgate Labs"
+ ],
+ "pages": [
+  {
+   "url": "https://northgate-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2021-04-01",
+   "title": "northgate-labs.test",
+   "text": "Dana Ruiz is the chief executive officer of Northgate Labs.\nNorthgate Labs was founded in 2012.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2026-03-20",
+   "title": "northgate-labs.test",
+   "text": "Lee Park is the chief executive officer of Northgate Labs.\nNorthgate Labs was founded in 2012.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2026-02-01",
+   "title": "northgate-labs.test",
+   "text": "Maya Ito is the chief executive officer of Northgate Labs.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    3
+   ],
+   "searchable": true,
+   "published_at": "2026-04-02T23:30:00-05:00",
+   "true_from": "2026-13-45",
+   "title": "northgate-labs.test",
+   "text": "Nora Voss is the chief executive officer of Northgate Labs.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    4
+   ],
+   "searchable": true,
+   "published_at": null,
+   "true_from": null,
+   "title": "northgate-labs.test",
+   "text": "Paul Quist is the chief executive officer of Northgate Labs.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/funding",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2020-06-01",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs has raised $5M in funding.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/funding",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-03-01",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs has raised $12M in total funding.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/funding",
+   "kind": "own",
+   "epochs": [
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-03-05",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs has raised $12M in total funding.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/team",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-14T00:00:00Z",
+   "true_from": "2019-01-01",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs is headquartered in Oslo.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/team",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-14T00:00:00Z",
+   "true_from": "2026-03-10",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs opened an office in Bergen.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/team",
+   "kind": "own",
+   "epochs": [
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-14T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs is headquartered in Bergen.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  },
+  {
+   "url": "https://northgate-labs.test/facts",
+   "kind": "filing",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-05T00:00:00Z",
+   "true_from": "2018-05-05",
+   "title": "northgate-labs.test",
+   "text": "Northgate Labs AS is the legal name of the company.\nNorthgate Labs employs about 40 people.\nAna Silva is the chief financial officer of Northgate Labs.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "northgate-labs.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

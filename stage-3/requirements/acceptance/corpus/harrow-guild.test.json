@@ -1,0 +1,85 @@
+{
+ "domain": "harrow-guild.test",
+ "names": [
+  "Harrow Guild"
+ ],
+ "pages": [
+  {
+   "url": "https://harrow-guild.test/leaders",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2022-03-01",
+   "title": "harrow-guild.test",
+   "text": "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Joel Brandt.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harrow-guild.test"
+   }
+  },
+  {
+   "url": "https://harrow-guild.test/leaders",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-03-12",
+   "title": "harrow-guild.test",
+   "text": "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Kai Larsen.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harrow-guild.test"
+   }
+  },
+  {
+   "url": "https://harrow-guild.test/leaders",
+   "kind": "own",
+   "epochs": [
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-03-12",
+   "title": "harrow-guild.test",
+   "text": "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Kai Larsen.\nHarrow Guild COO: Lena Voss.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harrow-guild.test"
+   }
+  },
+  {
+   "url": "https://harrow-guild.test/about",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "1999-06-01",
+   "title": "harrow-guild.test",
+   "text": "Harrow Guild was founded in 1999.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harrow-guild.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

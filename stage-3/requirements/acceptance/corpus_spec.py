@@ -68,11 +68,12 @@ assert len(FILLER_B) > 1600, len(FILLER_B)
 
 
 def page(url, text, *, kind="own", epochs=(0,), searchable=True, facts=None, title=None,
-         registrant=None, published_at="2026-01-15T00:00:00Z", static_text=None):
+         registrant=None, published_at="2026-01-15T00:00:00Z", static_text=None,
+         true_from="2026-01-01"):
     host = url.split("/")[2]
     p = {
         "url": url, "kind": kind, "epochs": list(epochs), "searchable": searchable,
-        "published_at": published_at, "true_from": "2026-01-01",
+        "published_at": published_at, "true_from": true_from,
         "title": title or host, "text": text, "facts": facts or {},
         "lineage": {"canonical": None, "first_published_by": None,
                     "registrant": registrant or host},
@@ -548,6 +549,119 @@ def selected(domain: str, field: str, epoch: int = 0):
     e = EXPECTED[domain][epoch][field]
     assert not isinstance(e, set), (domain, field)
     return e
+
+
+# =============================================================== STAGE 3 (change over time)
+# Pages carry `true_from` (the `Effective:` header line). `true_from=None` omits the line.
+# Company-specific scripts: which epoch holds which page text; the tests drive the mock's epoch
+# and the service's clock (see s3lib.py / timeline.py). Nothing here needs EXPECTED: the stage-3
+# oracle (timeline.py) derives everything from these pages with oracle.py and rank.py.
+S3 = "stage-3"
+
+
+def _versions(url, versions, **kw):
+    """One corpus page per (epochs, text, true_from[, published_at]) tuple of the same URL."""
+    out = []
+    for v in versions:
+        epochs, text, tf = v[0], v[1], v[2]
+        extra = dict(kw)
+        if len(v) > 3:
+            extra["published_at"] = v[3]
+        out.append(page(url, text, epochs=tuple(epochs), true_from=tf, **extra))
+    return out
+
+
+# ---- northgate-labs: one person's history, corrections, a page that vanishes, a page that stops
+# stating a value, and every way of getting `true_from` (Effective / Published fallback / null)
+_NG = "https://northgate-labs.test"
+COMPANIES["northgate-labs.test"] = {
+    "names": ["Northgate Labs"],
+    "pages": (
+        _versions(_NG + "/about", [
+            ((0,), "Dana Ruiz is the chief executive officer of Northgate Labs.\n"
+                   "Northgate Labs was founded in 2012.", "2021-04-01"),
+            ((1,), "Lee Park is the chief executive officer of Northgate Labs.\n"
+                   "Northgate Labs was founded in 2012.", "2026-03-20"),
+            ((2,), "Maya Ito is the chief executive officer of Northgate Labs.", "2026-02-01"),
+            # invalid Effective -> the UTC date of Published (23:30 at -05:00 is the next day)
+            ((3,), "Nora Voss is the chief executive officer of Northgate Labs.", "2026-13-45",
+             "2026-04-02T23:30:00-05:00"),
+            # no Effective, no Published -> null
+            ((4,), "Paul Quist is the chief executive officer of Northgate Labs.", None, None),
+        ], published_at="2026-01-10T00:00:00Z")
+        + _versions(_NG + "/funding", [
+            ((0,), "Northgate Labs has raised $5M in funding.", "2020-06-01"),
+            ((1,), "Northgate Labs has raised $12M in total funding.", "2026-03-01"),
+            ((2,), "Northgate Labs has raised $12M in total funding.", "2026-03-05"),
+        ], published_at="2026-01-12T00:00:00Z")
+        + _versions(_NG + "/team", [
+            ((0,), "Northgate Labs is headquartered in Oslo.", "2019-01-01"),
+            ((1,), "Northgate Labs opened an office in Bergen.", "2026-03-10"),   # no candidate
+            ((2, 3, 4), "Northgate Labs is headquartered in Bergen.", "2026-01-01"),
+        ], published_at="2026-01-14T00:00:00Z")
+        + [page(_NG + "/facts", "\n".join([
+            "Northgate Labs AS is the legal name of the company.",
+            "Northgate Labs employs about 40 people.",
+            "Ana Silva is the chief financial officer of Northgate Labs.",
+        ]), kind="filing", epochs=(0, 1, 2, 3, 4), published_at="2026-01-05T00:00:00Z",
+            true_from="2018-05-05")]
+    ),
+}
+
+# ---- cobalt-assembly: executives (three titles, rank per title, contested/known, history types)
+_CB = "https://cobalt-assembly.test"
+_AGG = "https://bizdata.test/cobalt-assembly"
+_NEWS = "https://news-ledger.test/cobalt-cto"
+COMPANIES["cobalt-assembly.test"] = {
+    "names": ["Cobalt Assembly"],
+    "pages": (
+        _versions(_CB + "/cfo", [
+            ((0, 1, 2, 3, 4), "Ana Silva is the chief financial officer of Cobalt Assembly.",
+             "2025-09-01"),
+            ((5,), "Cora Dahl is the chief financial officer of Cobalt Assembly.", "2026-05-01"),
+        ], published_at="2026-02-01T00:00:00Z")
+        + _versions(_CB + "/coo", [
+            ((0, 1), "Cobalt Assembly COO: Pia Lindqvist.", "2024-01-01"),
+            ((4, 5), "Cobalt Assembly COO: Pia Lindqvist.", None, None),   # tf null
+        ], published_at="2026-02-02T00:00:00Z")
+        + _versions(_NEWS, [
+            ((0,), "Cobalt Assembly appoints Rui Santos as chief technology officer.", "2026-01-15"),
+            ((1,), "Cobalt Assembly appoints Ben Okafor as chief technology officer.", "2026-03-01"),
+            ((2,), "Cobalt Assembly CTO: Ben Okoro.", "2026-02-10"),            # correction
+            ((3, 4), "Cobalt Assembly CTO: Ben Okeke.", "2026-02-01"),          # correction
+            ((5,), "Cobalt Assembly CTO: Ben Okuda.", "2026-01-20"),            # correction
+        ], kind="news", published_at="2026-02-01T00:00:00Z")
+        + _versions(_AGG, [
+            ((0, 1), "Cobalt Assembly CFO: Ana Silva.\nCobalt Assembly COO: Pia Lindgren.\n"
+                     "Cobalt Assembly CTO: Ben Okafor.", "2026-02-20"),
+            ((2,), "Cobalt Assembly CFO: Ana Silva.\nCobalt Assembly CTO: Ben Okafor.",
+             "2026-02-20"),
+            ((3, 4, 5), "Cobalt Assembly CFO: Ana Silva.", "2026-02-20"),
+        ], kind="aggregator", published_at="2026-02-20T00:00:00Z")
+        + [page(_CB + "/press", "\n".join([
+            "Ana Silva is CFO and Ben Okafor is CTO of Cobalt Assembly.",
+            "Cobalt Assembly's former CFO was Tom Berg.",
+            "Cobalt Assembly is reportedly looking for a new COO, Uma Rask.",
+        ]), epochs=(0, 1, 2, 3, 4, 5), published_at="2026-02-05T00:00:00Z", true_from="2026-02-05")]
+    ),
+}
+
+# ---- harrow-guild: executives only from one source each, plus a rebuild with an unrelated change
+# (every title unknown except `coo`); used for `/values` on executives and the empty-members case
+COMPANIES["harrow-guild.test"] = {
+    "names": ["Harrow Guild"],
+    "pages": (
+        _versions("https://harrow-guild.test/leaders", [
+            ((0,), "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Joel Brandt.", "2022-03-01"),
+            ((1,), "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Kai Larsen.", "2026-03-12"),
+            ((2,), "Harrow Guild CFO: Ines Moreau.\nHarrow Guild CTO: Kai Larsen.\n"
+                   "Harrow Guild COO: Lena Voss.", "2026-03-12"),
+        ], published_at="2026-02-01T00:00:00Z")
+        + _versions("https://harrow-guild.test/about", [
+            ((0, 1, 2), "Harrow Guild was founded in 1999.", "1999-06-01"),
+        ], published_at="2026-02-01T00:00:00Z")
+    ),
+}
 
 # A domain with no page anywhere in the corpus: the build completes ready with every field unknown.
 UNKNOWN_DOMAIN = "nowhere-at-all.test"

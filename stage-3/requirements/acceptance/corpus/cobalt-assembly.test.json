@@ -1,0 +1,260 @@
+{
+ "domain": "cobalt-assembly.test",
+ "names": [
+  "Cobalt Assembly"
+ ],
+ "pages": [
+  {
+   "url": "https://cobalt-assembly.test/cfo",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2025-09-01",
+   "title": "cobalt-assembly.test",
+   "text": "Ana Silva is the chief financial officer of Cobalt Assembly.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "cobalt-assembly.test"
+   }
+  },
+  {
+   "url": "https://cobalt-assembly.test/cfo",
+   "kind": "own",
+   "epochs": [
+    5
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-05-01",
+   "title": "cobalt-assembly.test",
+   "text": "Cora Dahl is the chief financial officer of Cobalt Assembly.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "cobalt-assembly.test"
+   }
+  },
+  {
+   "url": "https://cobalt-assembly.test/coo",
+   "kind": "own",
+   "epochs": [
+    0,
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-02-02T00:00:00Z",
+   "true_from": "2024-01-01",
+   "title": "cobalt-assembly.test",
+   "text": "Cobalt Assembly COO: Pia Lindqvist.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "cobalt-assembly.test"
+   }
+  },
+  {
+   "url": "https://cobalt-assembly.test/coo",
+   "kind": "own",
+   "epochs": [
+    4,
+    5
+   ],
+   "searchable": true,
+   "published_at": null,
+   "true_from": null,
+   "title": "cobalt-assembly.test",
+   "text": "Cobalt Assembly COO: Pia Lindqvist.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "cobalt-assembly.test"
+   }
+  },
+  {
+   "url": "https://news-ledger.test/cobalt-cto",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-01-15",
+   "title": "news-ledger.test",
+   "text": "Cobalt Assembly appoints Rui Santos as chief technology officer.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-ledger.test"
+   }
+  },
+  {
+   "url": "https://news-ledger.test/cobalt-cto",
+   "kind": "news",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-03-01",
+   "title": "news-ledger.test",
+   "text": "Cobalt Assembly appoints Ben Okafor as chief technology officer.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-ledger.test"
+   }
+  },
+  {
+   "url": "https://news-ledger.test/cobalt-cto",
+   "kind": "news",
+   "epochs": [
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-02-10",
+   "title": "news-ledger.test",
+   "text": "Cobalt Assembly CTO: Ben Okoro.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-ledger.test"
+   }
+  },
+  {
+   "url": "https://news-ledger.test/cobalt-cto",
+   "kind": "news",
+   "epochs": [
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-02-01",
+   "title": "news-ledger.test",
+   "text": "Cobalt Assembly CTO: Ben Okeke.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-ledger.test"
+   }
+  },
+  {
+   "url": "https://news-ledger.test/cobalt-cto",
+   "kind": "news",
+   "epochs": [
+    5
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-01-20",
+   "title": "news-ledger.test",
+   "text": "Cobalt Assembly CTO: Ben Okuda.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-ledger.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/cobalt-assembly",
+   "kind": "aggregator",
+   "epochs": [
+    0,
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T00:00:00Z",
+   "true_from": "2026-02-20",
+   "title": "bizdata.test",
+   "text": "Cobalt Assembly CFO: Ana Silva.\nCobalt Assembly COO: Pia Lindgren.\nCobalt Assembly CTO: Ben Okafor.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/cobalt-assembly",
+   "kind": "aggregator",
+   "epochs": [
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T00:00:00Z",
+   "true_from": "2026-02-20",
+   "title": "bizdata.test",
+   "text": "Cobalt Assembly CFO: Ana Silva.\nCobalt Assembly CTO: Ben Okafor.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/cobalt-assembly",
+   "kind": "aggregator",
+   "epochs": [
+    3,
+    4,
+    5
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T00:00:00Z",
+   "true_from": "2026-02-20",
+   "title": "bizdata.test",
+   "text": "Cobalt Assembly CFO: Ana Silva.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://cobalt-assembly.test/press",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "searchable": true,
+   "published_at": "2026-02-05T00:00:00Z",
+   "true_from": "2026-02-05",
+   "title": "cobalt-assembly.test",
+   "text": "Ana Silva is CFO and Ben Okafor is CTO of Cobalt Assembly.\nCobalt Assembly's former CFO was Tom Berg.\nCobalt Assembly is reportedly looking for a new COO, Uma Rask.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "cobalt-assembly.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

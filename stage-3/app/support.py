@@ -10,6 +10,8 @@ import re
 from decimal import Decimal, InvalidOperation
 
 FIELDS = ("legal_name", "hq_city", "ceo", "founded_year", "headcount_range", "funding_total")
+TITLES = ("cfo", "coo", "cto")          # the executives field's members, in this order (stage 3)
+ALL_FIELDS = FIELDS + ("executives",)
 
 HEADCOUNT_RANGES = (
     (1, 10, "1-10"),
@@ -32,6 +34,9 @@ STATEMENT_PHRASES = {
     "founded_year": ("founded", "founding", "established", "incorporated"),
     "headcount_range": ("employs", "employees", "staff", "people", "headcount", "workforce"),
     "funding_total": ("raised", "funding", "invested", "investment"),
+    "cfo": ("chief financial officer", "CFO"),
+    "coo": ("chief operating officer", "COO"),
+    "cto": ("chief technology officer", "CTO"),
 }
 
 NEGATING_PHRASES = ("in talks to", "plans to", "planning to", "wants to", "expects to",
@@ -276,9 +281,9 @@ def _cities(text: str) -> list[str]:
     return values
 
 
-def _person_names(text: str, domain: str) -> list[str]:
+def _person_names(text: str, domain: str, title: str) -> list[str]:
     removed: list[tuple[int, int]] = []
-    for pattern in [_phrase_pattern(company_name(domain)), *_STATEMENT_PATTERNS["ceo"]]:
+    for pattern in [_phrase_pattern(company_name(domain)), *_STATEMENT_PATTERNS[title]]:
         removed.extend(m.span() for m in pattern.finditer(text))
 
     def is_removed(token: _Token) -> bool:
@@ -309,8 +314,8 @@ def values_in_format(field: str, text: str, domain: str) -> list:
         return _legal_names(text, domain)
     if field == "hq_city":
         return _cities(text)
-    if field == "ceo":
-        return _person_names(text, domain)
+    if field == "ceo" or field in TITLES:
+        return _person_names(text, domain, field)
     amounts = _amounts(text)
     if field == "funding_total":
         return [value for _, _, value in amounts if value is not None]
@@ -355,6 +360,16 @@ def supported_values(excerpt: str, domain: str) -> dict:
         value = supported_value(excerpt, field, domain)
         if value is not None:
             result[field] = value
+    return result
+
+
+def supported_titles(excerpt: str, domain: str) -> dict:
+    """Every executive title the excerpt supports, with the person's name (stage 3: Executives)."""
+    result = {}
+    for title in TITLES:
+        value = supported_value(excerpt, title, domain)
+        if value is not None:
+            result[title] = value
     return result
 
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
+from datetime import date
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -12,12 +14,13 @@ from urllib.parse import parse_qs, unquote, urlsplit
 from .passwords import hash_password, verify_password
 from .providers import Gateway
 from .store import Store
-from .validation import (Invalid, WrongType, is_email, normalise_domain, paging_int, parse_timestamp,
-                         require_string)
+from .validation import (Invalid, WrongType, format_timestamp, is_email, normalise_domain, paging_int,
+                         parse_timestamp, require_string)
 
 log = logging.getLogger("dossier.http")
 
 _MISSING = object()
+_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
 STATIC = Path(__file__).parent / "static"
 ASSET_TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml"}
@@ -254,12 +257,67 @@ class Api:
             raise ApiError(409, "idempotency_key_reuse", "key already used with a different request")
         return status, response
 
-    def get_dossier(self, headers, domain_segment: str):
+    @staticmethod
+    def query_param(query: str, name: str):
+        """The first value of a query parameter, percent-decoded; a literal `+` stays a plus (an offset)."""
+        for pair in query.split("&"):
+            key, _, value = pair.partition("=")
+            if unquote(key) == name:
+                return unquote(value)
+        return None
+
+    @staticmethod
+    def timestamp_param(raw: str):
+        try:
+            return parse_timestamp(raw)
+        except (Invalid, WrongType):
+            raise invalid("timestamp must be RFC 3339 with an explicit offset") from None
+
+    def get_dossier(self, headers, domain_segment: str, query: str = ""):
         self.authenticate(headers)
-        view = self.store.view(self.domain(domain_segment))
+        domain = self.domain(domain_segment)
+        as_of = self.query_param(query, "as_of")
+        if as_of is None:
+            view = self.store.view(domain)
+        else:
+            view = self.store.view_as_of(domain, self.timestamp_param(as_of))
         if view is None:
-            raise not_found("no dossier for this domain")
+            raise not_found("no dossier for this domain, or no completed build at that time")
         return 200, view
+
+    def get_values(self, headers, domain_segment: str, query: str):
+        self.authenticate(headers)
+        domain = self.domain(domain_segment)
+        true_at = self.query_param(query, "true_at")
+        as_of = self.query_param(query, "as_of")
+        if true_at is None or not _DATE.fullmatch(true_at):
+            raise invalid("true_at must be a date, YYYY-MM-DD")
+        try:
+            date.fromisoformat(true_at)
+        except ValueError:
+            raise invalid("true_at must be a date, YYYY-MM-DD") from None
+        as_of_time = None if as_of is None else self.timestamp_param(as_of)
+        fields = self.store.values(domain, true_at, as_of_time)
+        if fields is None:
+            raise not_found("no dossier for this domain, or no completed build at that time")
+        return 200, {"domain": domain, "true_at": true_at, "as_of": as_of or format_timestamp(self.store.now()),
+                     "fields": fields}
+
+    def get_history(self, headers, domain_segment: str):
+        self.authenticate(headers)
+        history = self.store.history(self.domain(domain_segment))
+        if history is None:
+            raise not_found("no dossier for this domain")
+        return 200, history
+
+    def get_changes(self, headers, query: str):
+        self.authenticate(headers)
+        try:
+            since = paging_int(self.query_param(query, "since"), 0, 0, None)
+            limit = paging_int(self.query_param(query, "limit"), 50, 1, 200)
+        except Invalid as exc:
+            raise invalid(f"since/limit: {exc}") from None
+        return 200, self.store.changes(since, limit)
 
     def list_dossiers(self, headers, query: str):
         self.authenticate(headers)
@@ -289,6 +347,7 @@ class Api:
             ("auth", "login"): {"POST": lambda: self.login(raw)},
             ("dossiers",): {"POST": lambda: self.create_dossier(headers, path, raw),
                             "GET": lambda: self.list_dossiers(headers, query)},
+            ("changes",): {"GET": lambda: self.get_changes(headers, query)},
         }
         key = tuple(segments)
         if key in fixed:
@@ -297,7 +356,11 @@ class Api:
         if screen:
             return screen
         if len(segments) == 2 and segments[0] == "dossiers":
-            return {"GET": lambda: self.get_dossier(headers, unquote(segments[1]))}
+            return {"GET": lambda: self.get_dossier(headers, unquote(segments[1]), query)}
+        if len(segments) == 3 and segments[0] == "dossiers" and segments[2] == "values":
+            return {"GET": lambda: self.get_values(headers, unquote(segments[1]), query)}
+        if len(segments) == 3 and segments[0] == "dossiers" and segments[2] == "history":
+            return {"GET": lambda: self.get_history(headers, unquote(segments[1]))}
         if len(segments) == 3 and segments[0] == "dossiers" and segments[2] == "refresh":
             return {"POST": lambda: self.refresh_dossier(headers, path, unquote(segments[1]))}
         return {}
@@ -445,7 +508,7 @@ class Server(ThreadingHTTPServer):
 def serve() -> None:
     logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"),
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    Handler.api = Api(Store(Gateway()))
+    Handler.api = Api(Store(Gateway(), os.environ.get("DOSSIER_DATA_DIR") or "data"))
     port = int(os.environ.get("PORT") or 8080)
     server = Server(("0.0.0.0", port), Handler)
     log.info("listening on 0.0.0.0:%d", port)

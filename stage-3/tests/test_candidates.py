@@ -61,7 +61,8 @@ class SelectionTests(unittest.TestCase):
                              cand("A", "https://c.test/1", "news")])
         self.assertEqual((mixed["value"], mixed["status"]), ("A", "contested"))
         self.assertEqual([c["url"] for c in mixed["citations"]], ["https://a.test/1", "https://c.test/1"])
-        self.assertEqual(build_field([]), {"value": None, "status": "unknown", "citations": [], "candidates": []})
+        self.assertEqual(build_field([]), {"value": None, "status": "unknown", "true_from": None, "learned_at": None,
+                                         "citations": [], "candidates": []})
 
     def test_no_candidate_is_shared_between_calls(self):
         inputs = [cand("A", "https://a.test/1", "own")]

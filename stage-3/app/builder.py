@@ -30,10 +30,10 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
-from .candidates import build_field, make_candidate, page_kind, published_at
+from .candidates import build_all, empty_fields, make_candidate, page_kind, published_at, true_from_of
 from .pages import citable_sentences, header_of, looks_dynamic, prose_of
 from .providers import Budget, Cancelled, Deadline, Gateway
-from .support import FIELDS, company_name, names_company, supported_values
+from .support import ALL_FIELDS, FIELDS, company_name, names_company, supported_titles, supported_values
 
 log = logging.getLogger("dossier.build")
 
@@ -93,10 +93,7 @@ class Page:
 class BuildResult:
     succeeded: bool
     fields: dict = field(default_factory=dict)
-
-
-def empty_fields() -> dict:
-    return {name: {"value": None, "status": "unknown", "citations": [], "candidates": []} for name in FIELDS}
+    versions: dict = field(default_factory=dict)   # url -> {"true_from", "candidates"} of every page gathered
 
 
 class Builder:
@@ -123,6 +120,7 @@ class Builder:
         self.query_urls: dict[str, list[str]] = {}  # query -> URLs its search returned
         self.query_field: dict[str, str] = {}       # field query -> its field
         self.searched: set[tuple[str, str]] = set() # (query, depth) already tried
+        self.versions: dict[str, dict] = {}         # page versions of the latest decision (stage 3)
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ the plan
@@ -153,7 +151,7 @@ class Builder:
                 fields = self._spend_remaining(fields)
             except Cancelled:
                 return BuildResult(succeeded=False)
-        return BuildResult(succeeded=self.successes > 0, fields=fields)
+        return BuildResult(succeeded=self.successes > 0, fields=fields, versions=self.versions)
 
     def _field_query(self, field_name: str, round_: int) -> str | None:
         words = FIELD_QUERY_WORDS[field_name]
@@ -386,8 +384,13 @@ class Builder:
     # ------------------------------------------------------------------ deciding
 
     def _decide(self) -> dict:
-        """Each field from the evidence gathered so far: its candidates, ranked, and what follows from them."""
-        candidates: dict[str, list[dict]] = {name: [] for name in FIELDS}
+        """Each field from the evidence gathered so far: its candidates, ranked, and what follows from them.
+
+        Also records, for each page whose text counted, its page version: the date its evidence
+        holds from and the candidates it yielded (possibly none).
+        """
+        candidates: dict[str, list[dict]] = {name: [] for name in ALL_FIELDS}
+        self.versions = {}
         seen: set[str] = set()
         for url, page in list(self.pages.items()):
             if page.rendered or not looks_dynamic(page.prose):
@@ -397,18 +400,27 @@ class Builder:
             if url not in seen and not looks_dynamic(prose_of(partial)):
                 # The start of the served text: header lines, then prose cut off at some point.
                 self._collect(candidates, url, partial, provider, drop_last=len(partial) >= PARTIAL_MAY_BE_CUT)
-        return {name: build_field(candidates[name]) for name in FIELDS}
+        return build_all(candidates)
 
     def _collect(self, candidates: dict, url: str, text: str, provider: str, drop_last: bool) -> None:
-        """One candidate per value that the page's prose supports for a field."""
+        """One candidate per value that the page's prose supports for a field (or executive title)."""
         header = header_of(text)
         kind = page_kind(header.get("Kind"), url, self.domain)
         published = published_at(header.get("Published"))
+        true_from = true_from_of(header.get("Effective"), published)
         taken: set[tuple] = set()
+        found: list[dict] = []
         for sentence in citable_sentences(prose_of(text), drop_last=drop_last):
-            for name, value in supported_values(sentence, self.domain).items():
-                if (name, value) in taken:
+            supported = [(name, None, value) for name, value in supported_values(sentence, self.domain).items()]
+            supported += [("executives", title, value)
+                          for title, value in supported_titles(sentence, self.domain).items()]
+            for name, title, value in supported:
+                if (name, title, value) in taken:
                     continue
-                taken.add((name, value))
-                candidates[name].append(
-                    make_candidate(value, url, sentence, provider, kind, published, self.retrieved_at))
+                taken.add((name, title, value))
+                candidate = make_candidate(value, url, sentence, provider, kind, published, self.retrieved_at,
+                                           true_from, title)
+                candidates[name].append(candidate)
+                found.append({"field": name, **{k: candidate[k] for k in
+                              ("title", "value", "excerpt", "provider", "kind", "published_at") if k in candidate}})
+        self.versions[url] = {"true_from": true_from, "candidates": found}
