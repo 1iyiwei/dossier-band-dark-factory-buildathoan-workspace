@@ -400,6 +400,14 @@ class Builder:
             if url not in seen and not looks_dynamic(prose_of(partial)):
                 # The start of the served text: header lines, then prose cut off at some point.
                 self._collect(candidates, url, partial, provider, drop_last=len(partial) >= PARTIAL_MAY_BE_CUT)
+        # A page that says a browser fills it in, and was not rendered, yields no candidate but is
+        # still a page version: it ends or replaces earlier versions of its URL.
+        for url, text in [(u, p.text) for u, p in self.pages.items()] + [(u, t) for u, (_, t) in self.partials.items()]:
+            if url not in self.versions:
+                header = header_of(text)
+                self.versions[url] = {"true_from": true_from_of(header.get("Effective"),
+                                                                published_at(header.get("Published"))),
+                                      "candidates": []}
         return build_all(candidates)
 
     def _collect(self, candidates: dict, url: str, text: str, provider: str, drop_last: bool) -> None:
