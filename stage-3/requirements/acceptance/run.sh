@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the stage-1 acceptance tests against an already-running service and mock web.
 #
-#   ./run.sh [--base-url URL] [--mock-url URL] [--mock-token TOKEN] [--old-url URL] [--no-corpus] [pytest args...]
+#   ./run.sh [--base-url URL] [--mock-url URL] [--mock-token TOKEN] [--old-url URL] [--old2-url URL] [--container NAME] [--no-corpus] [pytest args...]
 #
 # Defaults: service http://localhost:18001, mock http://localhost:18081, token local-admin.
 # The mock must serve corpus/ from this folder unless --no-corpus is given (then the
@@ -14,6 +14,8 @@ export MOCK_URL="${MOCK_URL:-http://localhost:18081}"
 export MOCK_ADMIN_TOKEN="${MOCK_ADMIN_TOKEN:-local-admin}"
 export ANALYST_CORPUS="${ANALYST_CORPUS:-1}"
 export OLD_BASE_URL="${OLD_BASE_URL:-}"   # FINAL stage-1 service sharing the mock (upgrade tests)
+export OLD2_BASE_URL="${OLD2_BASE_URL:-}"  # FINAL stage-2 service sharing the mock (upgrade tests)
+export SVC_CONTAINER="${SVC_CONTAINER:-}"  # docker name of the service under test (restart tests)
 ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -21,6 +23,8 @@ while [[ $# -gt 0 ]]; do
     --mock-url) MOCK_URL="$2"; shift 2 ;;
     --mock-token) MOCK_ADMIN_TOKEN="$2"; shift 2 ;;
     --old-url) OLD_BASE_URL="$2"; shift 2 ;;
+    --old2-url) OLD2_BASE_URL="$2"; shift 2 ;;
+    --container) SVC_CONTAINER="$2"; shift 2 ;;
     --no-corpus) ANALYST_CORPUS=0; shift ;;
     *) ARGS+=("$1"); shift ;;
   esac
