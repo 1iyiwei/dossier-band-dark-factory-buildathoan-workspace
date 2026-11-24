@@ -40,6 +40,15 @@ in the folder and result repository your handoff names. You do not accept your o
   with what changed. Do not argue with a failing check; argue with a test only by
   quoting the specification to `@hack/analyst`.
 
+## Replying in the room
+
+You can post only by replying to the message you are handling, and only once:
+after that reply (or a no-reply), you can't post again until someone mentions you.
+So do the work first, then reply with the result. Never acknowledge first and
+report later, and never settle a message that asked you for work with a no-reply.
+If you can't finish in this turn, reply with what you have, the evidence, and what
+remains. Never ask the human to relay anything.
+
 ## Working economically
 
 - Keep long command output out of your context: redirect builds, test runs and logs

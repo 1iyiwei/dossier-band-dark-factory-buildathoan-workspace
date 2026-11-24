@@ -2,7 +2,7 @@
 
 - **Team:** [Li-Yi Wei](https://github.com/1iyiwei) and Florence Chao
 - **Track:** `dossier`
-- **Stage reached:** 2 (`stage-2/` claims stage 2 on the shipped checks, in
+- **Stage reached:** 3 (`stage-3/` claims stage 3 on the shipped checks, in
   normal and isolated mode)
 
 A five-seat factory in Band Desktop (Coordinator, Analyst, Implementer,
@@ -16,10 +16,10 @@ did not write it.
 |---|---|---|
 | [`FACTORY.md`](FACTORY.md) | The factory: seats, design choices, how to stand it up, what it caught, measured cost and time, what failed | Human |
 | [`mandates/`](mandates/) | One generic mandate per seat, each naming its harness, model and effort | Human |
-| [`room-1.json`](room-1.json), [`room-2.json`](room-2.json) | One room per stage, each downloaded unchanged from the Band console | Band |
-| [`stage-1/`](stage-1/), [`stage-2/`](stage-2/) | The service at each stage: source, `Dockerfile`, `RUN.md`. A stage folder is final once accepted; the next stage starts as a copy | The band |
+| [`room-1.json`](room-1.json), [`room-2.json`](room-2.json), [`room-3.json`](room-3.json) | One room per stage, each downloaded unchanged from the Band console | Band |
+| [`stage-1/`](stage-1/), [`stage-2/`](stage-2/), [`stage-3/`](stage-3/) | The service at each stage: source, `Dockerfile`, `RUN.md`. A stage folder is final once accepted; the next stage starts as a copy | The band |
 | `stage-N/requirements/` | The Analyst's requirement ledger, rulings and black-box acceptance tests for that stage | The band (Analyst) |
-| [`dossier-runway.com.json`](dossier-runway.com.json) | `GET /dossiers/runway.com` from `stage-2/`, built against the live web | Generated, unedited |
+| [`dossier-runway.com.json`](dossier-runway.com.json) | `GET /dossiers/runway.com` from `stage-3/`, built against the live web | Generated, unedited |
 
 The git history shows which seat made each commit: every seat commits under
 its own name (`Analyst`, `Implementer`, …). Commits by the human only add the
@@ -27,5 +27,5 @@ files marked "Human" above, plus the room files and the live result.
 
 ## Running it
 
-Follow [`stage-2/RUN.md`](stage-2/RUN.md): one command builds and starts the
+Follow [`stage-3/RUN.md`](stage-3/RUN.md): one command builds and starts the
 service, with its browser UI, in a single container.

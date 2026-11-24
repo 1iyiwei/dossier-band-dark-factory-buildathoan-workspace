@@ -71,6 +71,17 @@ After the last increment, post one report: per increment the final revision, che
 results, ledger status, elapsed time, every rejection and what it changed, and any
 blocker with its evidence.
 
+## Replying in the room
+
+The other seats can post only by replying, once, to the message they are handling;
+after that they can't post until someone mentions them. So when you hand off work,
+ask for the result as the reply. An acknowledgement without a result is not a report:
+mention that seat again and ask for the result.
+
+You start handoffs as new messages that mention their seats. Settle each message you
+receive once; don't leave a seat's report unanswered while it waits on you. Never ask
+the human to relay anything.
+
 ## Working economically
 
 - Keep long command output out of your context: redirect builds, test runs and logs

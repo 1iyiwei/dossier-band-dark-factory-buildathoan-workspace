@@ -56,6 +56,9 @@ has passing evidence or a recorded ruling.
   (`git -c user.name="<Seat>" -c user.email="<handle>@band.invalid"`), in
   small commits naming the work item and ledger IDs. No amend, rebase or
   squash.
+- **Reply with the result (from stage 4).** A seat can post only by
+  replying, once, to the message it is handling, so it does the work first
+  and replies with the result; it never acknowledges first and reports later.
 - **Working economically.** Long command output goes to files; seats read only
   summaries and failures; no seat re-runs a check another seat already
   reported with evidence for the same revision; one heavy check at a time.
@@ -122,20 +125,35 @@ open), Analyst suite 406/406 including 61 browser tests at 375 and 1280 px and
 an upgrade from the real stage-1 image; UX Reviewer 58/58 + 28/28 at phone and
 desktop sizes.
 
+### Stage 3
+
+| When (UTC) | Who | What | Fix |
+|---|---|---|---|
+| Nov 24 | Reviewer | Couldn't pin a revision: the Analyst had uncommitted edits in the repository | Analyst committed them (`fd5928c`) |
+| Nov 24 05:40–06:39 | Coordinator, Analyst | RUL-S3-04 (does a page that wasn't rendered still make a page version?): the Coordinator ruled yes, then withdrew it when the Analyst showed no spec sentence or test requires it. The Implementer followed each turn: commit, revert, reapply, revert (`aaa1917`…`4ad2027`) | Code back to `55d8c54`; the history shows the churn honestly |
+| Nov 24 | Coordinator | Refused the UX Reviewer's closure of R-UX-01..06 from API probing alone; asked for browser screenshots | Screens at 375 and 1280 px; rows closed |
+
+Stage 3 final: app code `4ad2027` (same as `55d8c54`), ledger 319 rows (315
+passing, 4 ruled, 0 open), Analyst suite 536 tests including SIGKILL restart,
+concurrency, and upgrades from stage-1, -2 and -3 exports; Reviewer ACCEPT
+from a clean clone. Left open, in the Coordinator's report: a stage-2 export
+carries no build list, so an imported stage-2 dossier has one build
+(RUL-S3-15); durability under load and throughput weren't measured.
+
 ## Measured cost and time
 
 Cost is Band's list-price estimate (`band usage`), not a bill.
 
-| Seat | Stage 1 | Stage 2 |
-|---|---|---|
-| Implementer | $16.42 | $10.11 |
-| Analyst | $13.11 | $9.36 |
-| Reviewer | $10.87 | $1.73 |
-| Coordinator | $4.58 | $1.46 |
-| UX Reviewer | $2.04 | $0.12 |
-| **Room total** | **$47.02** (89.2M tokens) | **$22.79** (92.0M tokens) |
+| Seat | Stage 1 | Stage 2 | Stage 3 |
+|---|---|---|---|
+| Implementer | $16.42 | $10.11 | $3.78 |
+| Analyst | $13.11 | $9.36 | $10.15 |
+| Reviewer | $10.87 | $1.73 | $2.10 |
+| Coordinator | $4.58 | $1.46 | $2.01 |
+| UX Reviewer | $2.04 | $0.12 | $0.33 |
+| **Room total** | **$47.02** (89.2M tokens) | **$22.79** (92.0M tokens) | **$18.38** (81.2M tokens) |
 
-Each stage ran in its own room (`room-1.json`, `room-2.json`). Stage 2 was
+Each stage ran in its own room (`room-1.json`, `room-2.json`, `room-3.json`). Stage 2 was
 about half the cost of stage 1 on more tokens: all seats on Sonnet or Haiku,
 and a fresh room per stage.
 
@@ -148,6 +166,11 @@ Stage 2, wall clock Nov 22 18:34 to Nov 23 17:38 UTC: 40 minutes of work by
 all seats on Nov 22 until the usage limit; intermittent Implementer work
 overnight (03:42–09:48) while the rest of the band was blocked (see below);
 then 50 minutes on Nov 23 (16:48–17:38) to acceptance and close.
+
+Stage 3, wall clock Nov 24 01:50 to 18:42 UTC: about 8 hours of continuous
+work (01:50–09:38) through the ledger, tests and reviews; then a stall with
+the last two verdicts finished but undelivered (see below), resolved after
+the human nudge at 17:12.
 
 ## What we tried, and what it cost us
 
@@ -187,6 +210,24 @@ then 50 minutes on Nov 23 (16:48–17:38) to acceptance and close.
   restarted the seats; they resumed by themselves and committed within a
   minute. The mandates didn't change. Lesson: a factory seat must not
   inherit its owner's personal instructions.
+- **Human input in stage 3, disclosed:** the dispatch; one message to the
+  Coordinator (Nov 24 17:12 UTC: "Resume from where the band stopped.");
+  a restart of the UX Reviewer (18:41 UTC) after an API "529 Overloaded"
+  error. No other message.
+- **Finished work that never reached the room (stages 2 and 3), and a
+  mandate change before stage 4, disclosed.** A Band Desktop seat can post
+  only by replying, once, to the message it is handling; there is no tool to
+  start a new message, and the `band send` CLI fallback is denied by the
+  permission check. In stage 3 the Reviewer (ACCEPT) and the UX Reviewer
+  (screens) had acknowledged their handoffs first, then finished hours
+  later with nowhere to post; the Coordinator waited. The Reviewer also asked
+  the human, in its own session, to relay its verdict; nobody did. After
+  stage 3 we added one section, "Replying in the room", to all five mandates:
+  do the work, then reply once with the result; never acknowledge first and
+  report later; never ask the human to relay. The Coordinator, which starts
+  handoffs as new messages (that works for it), gets the other side: ask
+  for the result as the reply, and treat an acknowledgement without a result
+  as no report. Stage 4 runs with it.
 - **From the toy practice run:** a default agent Band adds to new rooms stays
   in the room log and needs a mandate (we now check the participant list);
   commits defaulted to the human's git identity until each seat committed

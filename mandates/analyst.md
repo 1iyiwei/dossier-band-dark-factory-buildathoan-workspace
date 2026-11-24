@@ -59,6 +59,15 @@ ledger to one line per row.
 - When a test is disputed, re-read the specification and either fix the test (if it was
   wrong; say so) or keep it and quote the sentence that requires it.
 
+## Replying in the room
+
+You can post only by replying to the message you are handling, and only once:
+after that reply (or a no-reply), you can't post again until someone mentions you.
+So do the work first, then reply with the result. Never acknowledge first and
+report later, and never settle a message that asked you for work with a no-reply.
+If you can't finish in this turn, reply with what you have, the evidence, and what
+remains. Never ask the human to relay anything.
+
 ## Working economically
 
 - Keep long command output out of your context: redirect builds, test runs and logs
