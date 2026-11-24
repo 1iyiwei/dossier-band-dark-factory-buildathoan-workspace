@@ -1,4 +1,6 @@
-# Stage 2 acceptance tests (Analyst)
+# Stage 3 acceptance tests (Analyst)
+
+Stage 3 adds (written from `stage-3.md` + stages 1-2): `timeline.py` (oracle for two times, executives, history, feed, as_of, page versions; self-checked offline by `test_timeline_unit.py`), `s3lib.py` (endpoint wrappers, scripted multi-build scenarios on the mock's epochs and the service clock, response checkers, docker kill/restart), and `test_s3_timeline`, `test_s3_executives`, `test_s3_endpoints`, `test_s3_upgrade`, `test_s3_restart`, `test_s3_concurrency`, `test_s3_ui`. See `../HANDOFF.md` for the run commands (`OLD2_IMAGE`, `SVC_CONTAINER`). The stage-2 text below still describes the carried files.
 
 Black-box tests written from `stage-2.md` and `stage-1.md` only (HTTP and a real browser). Ledger IDs
 are in the test names (`test_R_CAN_04_…` covers `R-CAN-04`); `../LEDGER.md` maps every row.
