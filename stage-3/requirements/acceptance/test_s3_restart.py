@@ -56,8 +56,8 @@ def test_R3_RST_01_everything_answers_as_before(api, mock):
     rr = api.refresh(tok, NG, key=rk)
     api.wait(tok, NG)
     doms = [NG, CB, "nowhere-at-all.test"]
-    before = probe(api, tok, doms)
     api.clock("2026-05-01T09:00:00+00:00")
+    before = probe(api, tok, doms)
     elapsed = s3lib.kill_and_restart()
     assert elapsed < 60
     after = probe(api, tok, doms)
@@ -71,8 +71,6 @@ def test_R3_RST_01_everything_answers_as_before(api, mock):
     r = api.refresh(tok, NG, key=rk)
     assert r.status_code == 200 and r.json() == rr.json()
     assert_error(api.create(tok, "other-co.test", key=key), 409, "idempotency_key_reuse")
-    n = len(mock.log())
-    assert len(mock.log()) == n
     # the clock reads what it read before the stop
     mock.epoch(0)
     assert api.refresh(tok, CB).status_code == 202

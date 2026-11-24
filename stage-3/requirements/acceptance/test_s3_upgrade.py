@@ -267,6 +267,7 @@ def test_R3_UPG_07_stage2_import_history_as_of_and_feed(from2, domain):
 def test_R3_UPG_08_stage2_import_values_use_the_recorded_dates(from2):
     """/values: each imported candidate's URL is one version holding from its true_from."""
     api, tok = from2["api"], from2["tok"]
+    api.clock("2026-04-01T09:00:00+00:00")           # the default as_of is the clock: after the import
     cur = api.get(tok, NG).json()
     ceo = cur["fields"]["ceo"]["candidates"][0]
     ta = ceo["true_from"]

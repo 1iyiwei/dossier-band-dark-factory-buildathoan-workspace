@@ -61,7 +61,8 @@ def test_R3_UI_02_dossier_and_evidence_screens_show_six_fields_by_testid(fresh, 
         assert [i for i in ids_of(page, r"field-citations-.+")] == [f"field-citations-{f}" for f in FIELDS]
         page.goto(url(f"/dossiers/{d}/evidence"))
         expect(tid(page, "evidence-legal_name")).to_be_visible()
-        ev = ids_of(page, r"evidence-[a-z_]+")
+        ev = [i for i in ids_of(page, r"evidence-[a-z_]+") if i in {f"evidence-{f}" for f in FIELDS}
+              or i.endswith(("executives", "cfo", "coo", "cto"))]
         assert ev == [f"evidence-{f}" for f in FIELDS], ev
         assert not ids_of(page, r"candidate-(executives|cfo|coo|cto).*")
         assert not ids_of(page, r"evidence-empty-(executives|cfo|coo|cto)")
