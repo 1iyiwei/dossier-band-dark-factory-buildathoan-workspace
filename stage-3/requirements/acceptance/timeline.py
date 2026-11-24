@@ -143,11 +143,10 @@ class Build:
         return self
 
 
-def classify_field(old, new) -> str:
+def classify_field(f, old, new) -> str:
     """old/new: dict(value, true_from, members) of one field. Returns 'correction' or 'change'."""
     ov, nv = old["value"], new["value"]
-    if "members" in new and (old["members"] or new["members"]) and (
-            isinstance(ov, list) or isinstance(nv, list)):
+    if f == "executives":
         diff, corr = [], []
         for t in TITLES:
             o, n = old["members"].get(t), new["members"].get(t)
@@ -178,7 +177,7 @@ def simulate(builds: list[Build], domain: str) -> Sim:
     sim = Sim()
     cur = {f: dict(value=None, true_from=None, members={}, learned_at=None) for f in ALL_FIELDS}
     first_done = False
-    for b in builds:
+    for bi, b in enumerate(builds):
         b.prepare(domain)
         if b.ready:
             for f in ALL_FIELDS:
@@ -188,12 +187,12 @@ def simulate(builds: list[Build], domain: str) -> Sim:
                     if new["value"] is not None:
                         sim.history[f].append(dict(
                             type="initial", value=new["value"], true_from=new["true_from"],
-                            learned_at=b.time, cit=[c.url for c in new["cit"]]))
+                            learned_at=b.time, cit=[c.url for c in new["cit"]], bi=bi))
                 elif not _same(old["value"], new["value"]):
-                    t = classify_field(old, new)
+                    t = classify_field(f, old, new)
                     sim.history[f].append(dict(
                         type=t, value=new["value"], true_from=new["true_from"],
-                        learned_at=b.time, cit=[c.url for c in new["cit"]]))
+                        learned_at=b.time, cit=[c.url for c in new["cit"]], bi=bi))
                     sim.feed.append(dict(field=f, type=t, **{"from": old["value"]},
                                          to=new["value"], true_from=new["true_from"],
                                          learned_at=b.time))

@@ -326,4 +326,4 @@ def test_R_FLD_shapes_all_six_fields(fresh):
     tok = api.token(0)
     b = api.build(tok, T)
     assert_dossier_shape(b, T)
-    assert list(sorted(b["fields"])) == sorted(oracle.FIELDS)
+    assert list(b["fields"]) == oracle.ALL_FIELDS      # stage 3: executives after the six

@@ -117,4 +117,4 @@ def test_R_EVD_09_full_text_beyond_snippets(fresh):
     api, mock = fresh
     tok = api.token(0)
     b = api.build(tok, "sablewood-logistics.test")
-    assert all(fv["status"] == "known" for fv in b["fields"].values()), b["fields"]
+    assert all(b["fields"][f]["status"] == "known" for f in oracle.FIELDS), b["fields"]

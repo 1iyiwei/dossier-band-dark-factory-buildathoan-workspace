@@ -31,6 +31,16 @@ FIXTURE = {"now": T0, "users": USERS}
 RFC3339 = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$")
 
 
+def valid_date(s) -> bool:
+    if not isinstance(s, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", s):
+        return False
+    try:
+        datetime.strptime(s, "%Y-%m-%d")
+    except ValueError:
+        return False
+    return True
+
+
 def parse_ts(s: str) -> datetime:
     assert isinstance(s, str) and RFC3339.match(s), f"not RFC 3339 with offset: {s!r}"
     return datetime.fromisoformat(s.replace("Z", "+00:00"))
@@ -171,13 +181,13 @@ class Mock:
 
 # ------------------------------------------------------------------ dossier assertions
 FIELD_TYPES = {"legal_name": str, "hq_city": str, "ceo": str, "founded_year": int,
-               "headcount_range": str, "funding_total": int}
+               "headcount_range": str, "funding_total": int, "executives": list}
 
 
 PROVIDERS = ("nimble", "tavily", "kernel", "browserbase")
 STATUSES = ("known", "contested", "unknown")
 CAND_KEYS = {"value", "url", "excerpt", "provider", "kind", "published_at", "retrieved_at",
-             "selected"}
+             "selected", "true_from", "learned_at"}
 
 
 def assert_dossier_shape(b: dict, domain: str | None = None):
@@ -192,9 +202,15 @@ def assert_dossier_shape(b: dict, domain: str | None = None):
         parse_ts(b["researched_at"])
     assert isinstance(b["spent_units"], int) and not isinstance(b["spent_units"], bool)
     assert b["spent_units"] >= 0
-    assert list(b["fields"].keys()) == oracle.FIELDS or set(b["fields"].keys()) == set(oracle.FIELDS)
+    assert list(b["fields"].keys()) == oracle.ALL_FIELDS, list(b["fields"].keys())
     for f, fv in b["fields"].items():
-        assert set(fv.keys()) >= {"value", "status", "citations", "candidates"}, (f, fv.keys())
+        assert set(fv.keys()) >= {"value", "status", "citations", "candidates", "true_from",
+                                  "learned_at"}, (f, fv.keys())
+        if fv["value"] is None:
+            assert fv["true_from"] is None and fv["learned_at"] is None, (f, fv)
+        else:
+            assert fv["true_from"] is None or valid_date(fv["true_from"]), (f, fv)
+            parse_ts(fv["learned_at"])
         assert fv["status"] in STATUSES, (f, fv)
         assert isinstance(fv["candidates"], list), (f, fv)
         if fv["value"] is None:
@@ -202,6 +218,10 @@ def assert_dossier_shape(b: dict, domain: str | None = None):
         else:
             assert fv["status"] in ("known", "contested"), (f, fv)
             assert isinstance(fv["value"], FIELD_TYPES[f]) and not isinstance(fv["value"], bool), (f, fv)
+            if f == "executives":
+                assert fv["value"] and all(set(m) == {"title", "name"} for m in fv["value"]), fv
+                assert [m["title"] for m in fv["value"]] == [t for t in oracle.TITLES if t in
+                                                              {m["title"] for m in fv["value"]}], fv
             if f == "headcount_range":
                 assert fv["value"] in oracle.HEADCOUNT_VALUES, fv
             if isinstance(fv["value"], str):
@@ -216,6 +236,9 @@ def assert_dossier_shape(b: dict, domain: str | None = None):
                 assert c["kind"] in rank.KINDS or c["kind"] is None, c
                 assert isinstance(c["selected"], bool), c
                 parse_ts(c["retrieved_at"])
+                parse_ts(c["learned_at"])
+                assert c["true_from"] is None or valid_date(c["true_from"]), c
+                assert ("title" in c) == (f == "executives"), (f, c)
                 if c["published_at"] is not None:
                     parse_ts(c["published_at"])
 
@@ -225,6 +248,8 @@ def candidate_structure_problems(b: dict) -> list[str]:
     The selection rule, Status). Works on any dossier body, including imported ones."""
     probs = []
     for f, fv in b["fields"].items():
+        if f == "executives":
+            continue        # checked by s3lib.executives_problems (per-title ranking)
         cands = fv["candidates"]
         if not cands:
             if fv["status"] != "unknown" or fv["value"] is not None or fv["citations"]:
@@ -263,6 +288,8 @@ def candidate_problems(b: dict, domain: str, log: list[dict] | None, epoch: int 
     exp = rank.expected_candidates(domain, epoch)
     corpus_texts = all_page_texts()
     for f, fv in b["fields"].items():
+        if f == "executives":
+            continue
         want = [(c.url, c.value) for c in exp[f]]
         got = [(c["url"], c["value"]) for c in fv["candidates"]]
         if got != want:
@@ -317,7 +344,7 @@ def citation_problems(b: dict, domain: str, log: list[dict] | None, check_corpus
     probs = []
     corpus_texts = all_page_texts() if check_corpus else {}
     for f, fv in b["fields"].items():
-        if fv["value"] is None:
+        if fv["value"] is None or f == "executives":
             continue
         for c in fv["citations"]:
             ex = c["excerpt"]
