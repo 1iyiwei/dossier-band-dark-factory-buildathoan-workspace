@@ -1,0 +1,155 @@
+{
+ "domain": "lumen-textiles.test",
+ "names": [
+  "Lumen Textiles"
+ ],
+ "pages": [
+  {
+   "url": "https://lumen-textiles.test/p1",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "p1",
+   "text": "Lumen Textiles was founded in 1991.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p2",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-02T00:00:00.500Z",
+   "true_from": "2026-01-01",
+   "title": "p2",
+   "text": "Lumen Textiles was founded in 1992.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p3",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-03",
+   "true_from": "2026-01-01",
+   "title": "p3",
+   "text": "Lumen Textiles was founded in 1993.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p4",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-04T00:00:00",
+   "true_from": "2026-01-01",
+   "title": "p4",
+   "text": "Lumen Textiles was founded in 1994.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p5",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-30T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "p5",
+   "text": "Lumen Textiles was founded in 1995.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p6",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "soon",
+   "true_from": "2026-01-01",
+   "title": "p6",
+   "text": "Lumen Textiles was founded in 1996.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p7",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": null,
+   "true_from": "2026-01-01",
+   "title": "p7",
+   "text": "Lumen Textiles was founded in 1997.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  },
+  {
+   "url": "https://lumen-textiles.test/p8",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2025-12-31T23:00:00-05:00",
+   "true_from": "2026-01-01",
+   "title": "p8",
+   "text": "Lumen Textiles was founded in 1998.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "lumen-textiles.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

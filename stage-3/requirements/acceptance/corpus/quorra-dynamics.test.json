@@ -1,0 +1,51 @@
+{
+ "domain": "quorra-dynamics.test",
+ "names": [
+  "Quorra Dynamics"
+ ],
+ "pages": [
+  {
+   "url": "https://quorra-dynamics.test/",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Quorra Dynamics",
+   "text": "Quorra Dynamics makes vibration sensors for wind turbines.\nQuorra Dynamics has not been headquartered in Geneva since 2020.\nIts legal name is not Quorra Dynamics AG.\nQuorra Dynamics former chief executive Elena Brandt left last year.",
+   "facts": {
+    "hq_city": "Quorra Dynamics is headquartered in Bern.",
+    "ceo": "Elena Brandt",
+    "founded_year": "Quorra Dynamics was founded in 2016."
+   },
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "quorra-dynamics.test"
+   }
+  },
+  {
+   "url": "https://tech-dispatch.test/quorra",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Quorra Dynamics eyes new round",
+   "text": "Quorra Dynamics is reportedly in talks to raise $40M in new funding.\nQuorra Dynamics would have been established in 1999 under different owners.\nQuorra Dynamics, with 10-50 staff on payroll, still hires slowly.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "tech-dispatch.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

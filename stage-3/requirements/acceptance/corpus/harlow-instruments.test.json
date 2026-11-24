@@ -1,0 +1,227 @@
+{
+ "domain": "harlow-instruments.test",
+ "names": [
+  "Harlow Instruments"
+ ],
+ "pages": [
+  {
+   "url": "https://harlow-instruments.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T10:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "About Harlow Instruments",
+   "text": "Dana Ruiz has led Harlow Instruments as chief executive since 2021.\nHarlow Instruments was founded in 2009.\nHarlow Instruments Ltd is the registered company behind the Harlow brand.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harlow-instruments.test"
+   }
+  },
+  {
+   "url": "https://a-registry.test/harlow",
+   "kind": "filing",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T12:00:00+02:00",
+   "true_from": "2026-01-01",
+   "title": "Registry entry",
+   "text": "Harlow Instruments CEO: Dana Ruiz.\nHarlow Instruments was incorporated in 2010.\nHarlow Instruments plc is the legal entity on record.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "a-registry.test"
+   }
+  },
+  {
+   "url": "https://news-daily.test/harlow-ceo",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-03-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Harlow leadership",
+   "text": "Harlow Instruments CEO: Sam Ortiz.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "news-daily.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/harlow-instruments",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Harlow data sheet",
+   "text": "Harlow Instruments CEO: Sam Ortiz.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://listings.test/harlow",
+   "kind": "blog",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-25T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Harlow listing",
+   "text": "Harlow Instruments CEO: Pat Quill.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "listings.test"
+   }
+  },
+  {
+   "url": "https://harlow-instruments.test/contact",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2025-06-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Contact",
+   "text": "Harlow Instruments is headquartered in Leeds.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harlow-instruments.test"
+   }
+  },
+  {
+   "url": "https://harlow-instruments.test/news",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "News",
+   "text": "Harlow Instruments has its head office in York.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harlow-instruments.test"
+   }
+  },
+  {
+   "url": "https://funding-wire.test/a",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T01:00:00+02:00",
+   "true_from": "2026-01-01",
+   "title": "Seed round",
+   "text": "Harlow Instruments raised $5M in a seed round.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "funding-wire.test"
+   }
+  },
+  {
+   "url": "https://funding-wire.test/b",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-20T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Raise update",
+   "text": "Harlow Instruments has raised $7M to date.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "funding-wire.test"
+   }
+  },
+  {
+   "url": "https://funding-wire.test/c",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": null,
+   "true_from": "2026-01-01",
+   "title": "Undated raise",
+   "text": "Harlow Instruments has raised $9M.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "funding-wire.test"
+   }
+  },
+  {
+   "url": "https://funding-wire.test/d",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "last Tuesday",
+   "true_from": "2026-01-01",
+   "title": "Vague raise",
+   "text": "Harlow Instruments raised $3M in 2020.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "funding-wire.test"
+   }
+  },
+  {
+   "url": "https://harlow-instruments.test/careers",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-10T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Careers",
+   "text": "Harlow Instruments employs about 120 people.\nHarlow Instruments has 3,000 employees across sites.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "harlow-instruments.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

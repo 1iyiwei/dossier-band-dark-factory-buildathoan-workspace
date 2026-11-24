@@ -1,0 +1,83 @@
+{
+ "domain": "tarn-biotech.test",
+ "names": [
+  "Tarn Biotech"
+ ],
+ "pages": [
+  {
+   "url": "https://tarn-biotech.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-05T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "About Tarn Biotech",
+   "text": "Tarn Biotech Ltd is the registered company behind the lab.\nTarn Biotech is based in Cambridge.\nTarn Biotech employs about 120 people.\nTarn Biotech might be founded in 2012.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "tarn-biotech.test"
+   }
+  },
+  {
+   "url": "https://tarn-registry.test/tarn",
+   "kind": "filing",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-06T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Registry entry",
+   "text": "The registered name of Tarn Biotech is Tarn Biotech Limited.\nTarn Biotech is based in Cambridge.\nTarn Biotech has a headcount of 150.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "tarn-registry.test"
+   }
+  },
+  {
+   "url": "https://tarn-news.test/n1",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Tarn funding",
+   "text": "Tarn Biotech has raised $9M.\nTarn Biotech has raised $12M.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "tarn-news.test"
+   }
+  },
+  {
+   "url": "https://tarn-news.test/n2",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-20T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Tarn funding, earlier",
+   "text": "Tarn Biotech has raised US$ 9 million.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "tarn-news.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}
