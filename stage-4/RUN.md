@@ -144,7 +144,8 @@ The smoke script needs the service and the mock running (mock admin token `local
   member names and is never `contested`. Research never yields investor candidates.
 - **Batches.** `POST /batches` starts the first build of each domain without a dossier. The builds of a
   batch draw on one `Pool`; each build still has its own 80 units. A batch is `done` when all its
-  builds ended.
+  builds ended. When a call a build makes would pass the batch's budget the pool closes and the batch
+  makes no more calls; its remaining builds complete with what they have gathered.
 - **Provider errors.** A refused call (5xx, 429) is retried (4 attempts, 429s after at least 1.05 s)
   as long as the build's retry horizon allows; a refused extract is tried again in a later round; a
   provider is given up on for extracts only after three refusals with none served; searches that

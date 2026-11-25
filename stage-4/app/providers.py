@@ -117,16 +117,22 @@ class Cancelled(Exception):
 
 
 class Pool:
-    """Units shared by the builds of a batch: together they never spend more than the limit."""
+    """Units shared by the builds of a batch: together they never spend more than the limit.
+
+    Once a call that a build makes would pass the limit the pool is closed: the batch makes no
+    more provider calls (stage 4: Batches), and every build completes with what it has gathered.
+    """
 
     def __init__(self, limit: int):
         self.limit = limit
         self.spent = 0
+        self.closed = False
         self._lock = threading.Lock()
 
     def take(self, units: int) -> bool:
         with self._lock:
-            if self.spent + units > self.limit:
+            if self.closed or self.spent + units > self.limit:
+                self.closed = True
                 return False
             self.spent += units
             return True
@@ -138,7 +144,7 @@ class Pool:
     @property
     def remaining(self) -> int:
         with self._lock:
-            return self.limit - self.spent
+            return 0 if self.closed else self.limit - self.spent
 
 
 class Budget:
