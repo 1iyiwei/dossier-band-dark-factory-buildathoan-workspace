@@ -442,7 +442,7 @@ class Store:
                                          "spent": entry["spent"]})
                 record["spent_units"] += entry["spent"]
                 record["base_spent"] = record["spent_units"]
-                record["outcome"] = record["outcome"] or "failed"
+                record["outcome"] = "failed"   # fields stay as the last ready build left them
                 member = self.batches.get(entry["batch"], {}).get("members", {}).get(entry["domain"])
                 if member is not None:
                     member.update(spent=entry["spent"], done=True)

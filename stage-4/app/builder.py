@@ -132,6 +132,7 @@ class Builder:
         self.extract_refusals = 0                   # plain extracts every attempt of which was refused
         self.extract_served = 0                     # plain extracts that returned a page
         self.failed_urls: set[str] = set()          # pages whose extract was refused: tried again in a later round
+        self.originals: set[str] = set()            # pages extracted only to resolve an origin: not evidence
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ the plan
@@ -456,10 +457,15 @@ class Builder:
             return self.domain
         return registrant_of(header, url)
 
+    def _is_original_only(self, url: str) -> bool:
+        return url in self.originals and url not in self.hits and url not in self.cited
+
     def _missing_originals(self) -> list[str]:
         """The originals that some gathered page's origin needs and that were not tried yet."""
         needed: list[str] = []
         for url in list(self.pages) + [u for u in self.partials if u not in self.pages]:
+            if self._is_original_only(url):
+                continue
             current, text, hops = url, self._text_of(url), 0
             while text is not None:
                 header = header_of(text)
@@ -487,6 +493,7 @@ class Builder:
                 page = self._extract(url, render=self._own_host(url))
                 if page is not None:
                     self.pages[url] = page
+                    self.originals.add(url)
             self._parallel([lambda u=u: one(u) for u in needed])
             self.failed_urls.clear()   # an original no provider served stands for its host
 
@@ -506,6 +513,8 @@ class Builder:
         self.versions = {}
         seen: set[str] = set()
         for url, page in list(self.pages.items()):
+            if self._is_original_only(url):
+                continue   # an original obtained for an origin is not itself evidence
             if page.rendered or not looks_dynamic(page.prose):
                 self._collect(candidates, url, page.text, page.provider, drop_last=False)
                 seen.add(url)

@@ -154,6 +154,11 @@ class Origins(unittest.TestCase):
         origin, _, web = self.origin_of(pages, "https://copy.test/a")
         self.assertEqual(origin, "root.test")
         self.assertIn("https://orig.test/a", web.extracted)
+        orig = page({"Kind": "news"}, self.FOUNDED + " Acme Robotics is headquartered in Porto.")
+        pages["https://orig.test/a"] = orig
+        _, result, _ = self.origin_of(pages, "https://copy.test/a")
+        self.assertEqual([c["url"] for c in result.fields["founded_year"]["candidates"]], ["https://copy.test/a"])
+        self.assertEqual(result.fields["hq_city"]["candidates"], [])   # an original is not evidence
 
     def test_unserved_original_and_fourth_hop_give_the_host(self):
         pages = {"https://copy.test/a": page({"Kind": "news", "Canonical": "https://gone.test/a"}, self.FOUNDED)}
