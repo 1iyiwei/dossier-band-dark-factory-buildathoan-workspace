@@ -1,0 +1,191 @@
+{
+ "domain": "linden-forge.test",
+ "names": [
+  "Linden Forge"
+ ],
+ "pages": [
+  {
+   "url": "https://linden-forge.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2020-01-01",
+   "title": "linden-forge.test",
+   "text": "Hana Weiss is the chief executive officer of Linden Forge.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "linden-forge.test"
+   }
+  },
+  {
+   "url": "https://linden-forge-official.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge-official.test",
+   "text": "Linden Forge CEO: Gordon Pike.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "shadow-host.test"
+   }
+  },
+  {
+   "url": "https://blog.linden-forge.test/post",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-05T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "blog.linden-forge.test",
+   "text": "Linden Forge was founded in 2009.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "blog.linden-forge.test"
+   }
+  },
+  {
+   "url": "https://linden-forge.test/press",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-06T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge.test",
+   "text": "Linden Forge was founded in 2009.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "WWW.Linden-Forge.TEST."
+   }
+  },
+  {
+   "url": "https://linden-forge.test/careers",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-07T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge.test",
+   "text": "Linden Forge employs about 120 people.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "not a domain!"
+   }
+  },
+  {
+   "url": "https://linden-forge.test/legal",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-08T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge.test",
+   "text": "Linden Forge, Inc. is the legal name of the company.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "registry-corp.test"
+   }
+  },
+  {
+   "url": "https://linden-forge-info.test/x",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-09T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge-info.test",
+   "text": "Linden Forge employs about 120 people.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": "press-wire.test",
+    "registrant": "other-reg.test"
+   }
+  },
+  {
+   "url": "https://linden-forge-copy.test/hq",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "linden-forge-copy.test",
+   "text": "Linden Forge is headquartered in Graz.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://wire-hub.test/linden-hq",
+    "first_published_by": null,
+    "registrant": "imposter-reg.test"
+   }
+  },
+  {
+   "url": "https://copycat.test/linden",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-11T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "copycat.test",
+   "text": "Linden Forge is headquartered in Graz.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://fake-linden.test/hq",
+    "first_published_by": null,
+    "registrant": "copycat.test"
+   }
+  },
+  {
+   "url": "https://registry.test/linden",
+   "kind": "filing",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "registry.test",
+   "text": "Linden Forge was founded in 2009.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "registry.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "domain": "meridel-foods.test",
+ "names": [
+  "Meridel Foods"
+ ],
+ "pages": [
+  {
+   "url": "https://meridel-foods.test/",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Meridel Foods",
+   "text": "Meridel Foods was founded in 1996! Nobody could have predicted its growth.\nMeridel Foods, with 120 drivers and 1998 vans, employs a large staff.\nMeridel Foods named Ana Sousa and Rui Matos co-CEO in 2020.\nMeridel Foods registered as Meridel Foods Pty Ltd.\nMeridel Foods has its head office in Vila Nova de Gaia.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "meridel-foods.test"
+   }
+  },
+  {
+   "url": "https://meridel-foods.test/finance",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Meridel Foods finance",
+   "text": "Meridel Foods has raised $1.2345m from angel investors.\nMeridel Foods raised CHF 5 million in a later round.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "meridel-foods.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

@@ -1,0 +1,114 @@
+{
+ "domain": "vesper-lanterns.test",
+ "names": [
+  "Vesper Lanterns"
+ ],
+ "pages": [
+  {
+   "url": "https://vesper-lanterns.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "About Vesper Lanterns",
+   "text": "Vesper Lanterns makes hand-blown glass lanterns.\nVesper Lanterns is headquartered in Murano.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "vesper-lanterns.test"
+   },
+   "static_text": "Vesper Lanterns makes hand-blown glass lanterns.\nVesper Lanterns is headquartered in Venice.\nPlease enable JavaScript to see the latest details."
+  },
+  {
+   "url": "https://vesper-lanterns.test/team",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Team",
+   "text": "Vesper Lanterns CEO: Lia Moretti.\nVesper Lanterns employs 45 people.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "vesper-lanterns.test"
+   },
+   "static_text": "The team page is built in your browser."
+  },
+  {
+   "url": "https://vesper-lanterns.test/investors",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Investors",
+   "text": "Vesper Lanterns has raised $2M from private investors.\nVesper Lanterns was founded in 1998.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "vesper-lanterns.test"
+   },
+   "static_text": "Vesper Lanterns was founded in 1989."
+  },
+  {
+   "url": "https://vesper-lanterns.test/press",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-13T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Press",
+   "text": "Vesper Lanterns might raise $20M next year.\nVesper Lanterns has its head office in Murano.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "vesper-lanterns.test"
+   },
+   "static_text": "Vesper Lanterns has its head office in Venice."
+  }
+ ],
+ "research": {
+  "nimble": {
+   "0": [
+    {
+     "field": "funding_total",
+     "value": 20000000,
+     "url": "https://vesper-lanterns.test/press",
+     "excerpt": "Vesper Lanterns might raise $20M next year."
+    },
+    {
+     "field": "founded_year",
+     "value": 1998,
+     "url": "https://vesper-lanterns.test/investors",
+     "excerpt": "Vesper Lanterns was founded in 1998."
+    },
+    {
+     "field": "ceo",
+     "value": "Lia Moretti",
+     "url": "https://vesper-lanterns.test/team",
+     "excerpt": "Vesper Lanterns CEO: Lia Moretti."
+    },
+    {
+     "field": "hq_city",
+     "value": "Venice",
+     "url": "https://vesper-lanterns.test/about",
+     "excerpt": "Vesper Lanterns is headquartered in Venice."
+    }
+   ]
+  }
+ }
+}

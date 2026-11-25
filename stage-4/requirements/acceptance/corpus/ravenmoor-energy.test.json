@@ -1,0 +1,191 @@
+{
+ "domain": "ravenmoor-energy.test",
+ "names": [
+  "Ravenmoor Energy"
+ ],
+ "pages": [
+  {
+   "url": "https://ravenmoor-energy.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "ravenmoor-energy.test",
+   "text": "Ravenmoor Energy was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "ravenmoor-energy.test"
+   }
+  },
+  {
+   "url": "https://c0.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-02T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "c0.test",
+   "text": "Ravenmoor Energy was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://c1.test/rm",
+    "first_published_by": null,
+    "registrant": "c0.test"
+   }
+  },
+  {
+   "url": "https://c1.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-03T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "c1.test",
+   "text": "Ravenmoor Energy was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://c2.test/rm",
+    "first_published_by": null,
+    "registrant": "c1.test"
+   }
+  },
+  {
+   "url": "https://c2.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-04T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "c2.test",
+   "text": "Ravenmoor Energy was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://c3.test/rm",
+    "first_published_by": null,
+    "registrant": "c2.test"
+   }
+  },
+  {
+   "url": "https://c3.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-05T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "c3.test",
+   "text": "Ravenmoor Energy was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://archive.test/rm",
+    "first_published_by": null,
+    "registrant": "c3.test"
+   }
+  },
+  {
+   "url": "https://m-copy.test/rm",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-06T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "m-copy.test",
+   "text": "Ravenmoor Energy raised $30M.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://nowhere-host.test/gone",
+    "first_published_by": null,
+    "registrant": "m-copy.test"
+   }
+  },
+  {
+   "url": "https://cyc-a.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-07T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "cyc-a.test",
+   "text": "Ravenmoor Energy is headquartered in Tromsø.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://cyc-b.test/rm",
+    "first_published_by": null,
+    "registrant": "cyc-a.test"
+   }
+  },
+  {
+   "url": "https://cyc-b.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-08T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "cyc-b.test",
+   "text": "Ravenmoor Energy is headquartered in Tromsø.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://cyc-a.test/rm",
+    "first_published_by": null,
+    "registrant": "cyc-b.test"
+   }
+  },
+  {
+   "url": "https://r-self.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-09T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "r-self.test",
+   "text": "Ravenmoor Energy employs about 300 people.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://r-self.test/rm",
+    "first_published_by": null,
+    "registrant": "r-self.test"
+   }
+  },
+  {
+   "url": "https://s-copy.test/rm",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "s-copy.test",
+   "text": "Ravenmoor Energy has 40 employees.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://c0.test/rm",
+    "first_published_by": "first-wire.test",
+    "registrant": "s-copy.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

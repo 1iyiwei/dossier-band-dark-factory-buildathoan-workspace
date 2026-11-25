@@ -1,0 +1,89 @@
+{
+ "domain": "wire-hub.test",
+ "names": [
+  "Wire Hub"
+ ],
+ "pages": [
+  {
+   "url": "https://wire-hub.test/corvane-ceo",
+   "kind": "news",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "searchable": false,
+   "published_at": "2026-01-30T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "wire-hub.test",
+   "text": "Corvane Systems CEO: Ines Marchetti.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "wire-hub.test"
+   }
+  },
+  {
+   "url": "https://wire-hub.test/linden-hq",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-02T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "wire-hub.test",
+   "text": "Linden Forge is headquartered in Vienna.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "wire-hub.test"
+   }
+  },
+  {
+   "url": "https://fake-linden.test/hq",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-03T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "fake-linden.test",
+   "text": "Linden Forge is headquartered in Vienna.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "imposter.test"
+   }
+  },
+  {
+   "url": "https://archive.test/rm",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "archive.test",
+   "text": "Ravenmoor Energy was founded in 1999.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "pressroom.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

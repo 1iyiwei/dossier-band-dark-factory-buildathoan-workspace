@@ -1,0 +1,47 @@
+{
+ "domain": "pivotal-reed.test",
+ "names": [
+  "Pivotal Reed"
+ ],
+ "pages": [
+  {
+   "url": "https://pivotal-reed.test/",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Pivotal Reed",
+   "text": "Pivotal Reed CEO: Hana Sato.\nPivotal Reed was founded in 2001.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "pivotal-reed.test"
+   }
+  },
+  {
+   "url": "https://pivotal-reed.test/",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Pivotal Reed",
+   "text": "Pivotal Reed CEO: Leon Brandt.\nPivotal Reed opened a new studio.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "pivotal-reed.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

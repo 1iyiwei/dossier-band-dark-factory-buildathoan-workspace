@@ -1,0 +1,47 @@
+{
+ "domain": "halden-labs.test",
+ "names": [
+  "Halden Labs"
+ ],
+ "pages": [
+  {
+   "url": "https://halden-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2018-03-01",
+   "title": "halden-labs.test",
+   "text": "Halden Labs was founded in 2018.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "halden-labs.test"
+   }
+  },
+  {
+   "url": "https://halden-labs.test/about",
+   "kind": "own",
+   "epochs": [
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2025-02-01",
+   "title": "halden-labs.test",
+   "text": "Halden Labs was founded in 2018.\nHalden Labs is backed by Fjord Capital and Birch Partners.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "halden-labs.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "domain": "ledgerline-partners.test",
+ "names": [
+  "Ledgerline Partners"
+ ],
+ "pages": [
+  {
+   "url": "https://ledgerline-partners.test/team",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Ledgerline team",
+   "text": "Ines Varga is the chief executive of Ledgerline Partners.\nLedgerline Partners was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "ledgerline-partners.test"
+   }
+  },
+  {
+   "url": "https://capital-wire.test/ledgerline",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Ledgerline at the summit",
+   "text": "Ledgerline Partners CEO Tomas Reyes spoke at the summit.\nLedgerline Partners was established in 2004, according to its filings.\nLedgerline Partners has raised $12M.\nLedgerline Partners raised 12 million dollars from two funds.\nLedgerline Partners funding reached US$12 million, or $12,000,000 in total.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "capital-wire.test"
+   }
+  },
+  {
+   "url": "https://ledgerline-partners.test/press",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "Press",
+   "text": "Ledgerline Partners raised €30M in a separate euro tranche.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "ledgerline-partners.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

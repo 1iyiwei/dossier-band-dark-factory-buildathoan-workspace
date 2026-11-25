@@ -1,0 +1,196 @@
+{
+ "domain": "quillon-bio.test",
+ "names": [
+  "Quillon Bio"
+ ],
+ "pages": [
+  {
+   "url": "https://quillon-bio.test/investors",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2024-05-02",
+   "title": "quillon-bio.test",
+   "text": "Northwind Ventures and Bluebird Capital are investors in Quillon Bio.\nQuillon Bio is reportedly backed by Zenith Capital.\nQuillon Bio is led by Dana Ruiz.\nQuillon Bio is backed by Maple Grove.\nQuillon Bio could be backed by Orion Partners.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "quillon-bio.test"
+   }
+  },
+  {
+   "url": "https://quillon-bio.test/investors",
+   "kind": "own",
+   "epochs": [
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2024-05-02",
+   "title": "quillon-bio.test",
+   "text": "Zenith Fund and Bluebird Capital are investors in Quillon Bio.\nÄrlig Capital participated in the round at Quillon Bio.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "quillon-bio.test"
+   }
+  },
+  {
+   "url": "https://dealwire.test/quillon",
+   "kind": "news",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-20T00:00:00Z",
+   "true_from": "2026-01-20",
+   "title": "dealwire.test",
+   "text": "Quillon Bio raised $40M in a round led by General Atlantic.\nQuillon Bio raised $40M with a round backed by Pine Equity Fund.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "dealwire.test"
+   }
+  },
+  {
+   "url": "https://dealcopy.test/quillon",
+   "kind": "news",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-21T00:00:00Z",
+   "true_from": "2026-01-21",
+   "title": "dealcopy.test",
+   "text": "Quillon Bio raised $40M with a round backed by Pine Equity Fund.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://dealwire.test/quillon",
+    "first_published_by": null,
+    "registrant": "dealcopy.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/quillon",
+   "kind": "aggregator",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-02-02T00:00:00Z",
+   "true_from": "2026-02-02",
+   "title": "bizdata.test",
+   "text": "Quillon Bio is backed by General Atlantic and Orchid Partners, with $40M raised.\nNorthwind Ventures and Bluebird Capital are investors in Quillon Bio.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://registry-office.test/quillon",
+   "kind": "filing",
+   "epochs": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-03T00:00:00Z",
+   "true_from": "2024-11-01",
+   "title": "registry-office.test",
+   "text": "Quillon Bio Series A investors: Harbor Partners.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "registry-office.test"
+   }
+  },
+  {
+   "url": "https://registry-office.test/quillon-2",
+   "kind": "filing",
+   "epochs": [
+    2,
+    3
+   ],
+   "searchable": true,
+   "published_at": "2026-01-04T00:00:00Z",
+   "true_from": "2023-01-10",
+   "title": "registry-office.test",
+   "text": "Quillon Bio Series Seed investors: Delta Fund.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "registry-office.test"
+   }
+  },
+  {
+   "url": "https://registry-office.test/quillon-3",
+   "kind": "filing",
+   "epochs": [
+    4
+   ],
+   "searchable": true,
+   "published_at": null,
+   "true_from": null,
+   "title": "registry-office.test",
+   "text": "Kappa Holdings participated in the Quillon Bio round.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "registry-office.test"
+   }
+  },
+  {
+   "url": "https://quillon-bio.test/about",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "searchable": true,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "quillon-bio.test",
+   "text": "Quillon Bio was founded in 2016.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "quillon-bio.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

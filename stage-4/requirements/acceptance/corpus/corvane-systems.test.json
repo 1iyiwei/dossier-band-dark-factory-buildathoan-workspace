@@ -1,0 +1,223 @@
+{
+ "domain": "corvane-systems.test",
+ "names": [
+  "Corvane Systems"
+ ],
+ "pages": [
+  {
+   "url": "https://corvane-systems.test/about",
+   "kind": "own",
+   "epochs": [
+    0,
+    1
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2021-04-01",
+   "title": "corvane-systems.test",
+   "text": "Ines Marchetti is the chief executive officer of Corvane Systems.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "corvane-systems.test"
+   }
+  },
+  {
+   "url": "https://corvane-systems.test/about",
+   "kind": "own",
+   "epochs": [
+    2,
+    3,
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2026-03-20",
+   "title": "corvane-systems.test",
+   "text": "Paul Oyelaran is the chief executive officer of Corvane Systems.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "corvane-systems.test"
+   }
+  },
+  {
+   "url": "https://corvane-systems.test/about",
+   "kind": "own",
+   "epochs": [
+    5,
+    6
+   ],
+   "searchable": true,
+   "published_at": "2026-01-10T00:00:00Z",
+   "true_from": "2021-04-01",
+   "title": "corvane-systems.test",
+   "text": "Ines Marchetti is the chief executive officer of Corvane Systems.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "corvane-systems.test"
+   }
+  },
+  {
+   "url": "https://corvane-systems.test/team",
+   "kind": "own",
+   "epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "searchable": true,
+   "published_at": "2026-01-11T00:00:00Z",
+   "true_from": "2025-09-01",
+   "title": "corvane-systems.test",
+   "text": "Ana Silva is the chief financial officer of Corvane Systems.\nCorvane Systems was founded in 2012.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "corvane-systems.test"
+   }
+  },
+  {
+   "url": "https://corvane-systems.test/ops",
+   "kind": "own",
+   "epochs": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "searchable": true,
+   "published_at": "2026-01-12T00:00:00Z",
+   "true_from": "2026-02-01",
+   "title": "corvane-systems.test",
+   "text": "Corvane Systems COO: Mei Tan.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "corvane-systems.test"
+   }
+  },
+  {
+   "url": "https://daily-ledger.test/corvane",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-01T00:00:00Z",
+   "true_from": "2026-02-01",
+   "title": "daily-ledger.test",
+   "text": "Corvane Systems CEO: Ines Marchetti.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://wire-hub.test/corvane-ceo",
+    "first_published_by": null,
+    "registrant": "daily-ledger.test"
+   }
+  },
+  {
+   "url": "https://bizdata.test/corvane",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-02T00:00:00Z",
+   "true_from": "2026-02-02",
+   "title": "bizdata.test",
+   "text": "Corvane Systems CEO: Ines Marchetti.\nCorvane Systems CFO: Ana Silva.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": "daily-ledger.test",
+    "registrant": "bizdata.test"
+   }
+  },
+  {
+   "url": "https://mirror-one.test/corvane",
+   "kind": "aggregator",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-02-03T00:00:00Z",
+   "true_from": "2026-02-03",
+   "title": "mirror-one.test",
+   "text": "Corvane Systems CEO: Ines Marchetti.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://bizdata.test/corvane",
+    "first_published_by": null,
+    "registrant": "mirror-one.test"
+   }
+  },
+  {
+   "url": "https://press-room.test/corvane",
+   "kind": "news",
+   "epochs": [
+    3
+   ],
+   "searchable": true,
+   "published_at": "2026-03-25T00:00:00Z",
+   "true_from": "2026-03-25",
+   "title": "press-room.test",
+   "text": "Corvane Systems CEO: Paul Oyelaran.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "press-room.test"
+   }
+  },
+  {
+   "url": "https://press-room.test/corvane-coo",
+   "kind": "news",
+   "epochs": [
+    4
+   ],
+   "searchable": true,
+   "published_at": "2026-03-26T00:00:00Z",
+   "true_from": "2026-03-26",
+   "title": "press-room.test",
+   "text": "Corvane Systems COO: Mei Tan.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "press-room.test"
+   }
+  },
+  {
+   "url": "https://daily-ledger.test/corvane-2",
+   "kind": "news",
+   "epochs": [
+    6
+   ],
+   "searchable": true,
+   "published_at": "2026-04-20T00:00:00Z",
+   "true_from": "2026-04-20",
+   "title": "daily-ledger.test",
+   "text": "Corvane Systems CEO: Ines Marchetti.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "daily-ledger.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

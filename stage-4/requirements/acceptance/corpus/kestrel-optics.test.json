@@ -1,0 +1,191 @@
+{
+ "domain": "kestrel-optics.test",
+ "names": [
+  "Kestrel Optics"
+ ],
+ "pages": [
+  {
+   "url": "https://kestrel-optics.test/a",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "a",
+   "text": "Kestrel Optics was founded in 2001.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "kestrel-optics.test"
+   }
+  },
+  {
+   "url": "https://www.kestrel-optics.test/b",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "b",
+   "text": "Kestrel Optics was founded in 2002.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "www.kestrel-optics.test"
+   }
+  },
+  {
+   "url": "https://about.kestrel-optics.test/c",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "c",
+   "text": "Kestrel Optics was founded in 2003.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "about.kestrel-optics.test"
+   }
+  },
+  {
+   "url": "https://kestrel-profiles.test/d",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "d",
+   "text": "Kestrel Optics was founded in 2004.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "kestrel-profiles.test"
+   }
+  },
+  {
+   "url": "https://kestrel-optics.test/e",
+   "kind": "blog",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "e",
+   "text": "Kestrel Optics was founded in 2005.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "kestrel-optics.test"
+   }
+  },
+  {
+   "url": "https://other-host.test/f",
+   "kind": "blog",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "f",
+   "text": "Kestrel Optics was founded in 2006.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "other-host.test"
+   }
+  },
+  {
+   "url": "https://other-host.test/g",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "g",
+   "text": "Kestrel Optics was founded in 2007.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "other-host.test"
+   }
+  },
+  {
+   "url": "https://other-host.test/h",
+   "kind": "NEWS",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "h",
+   "text": "Kestrel Optics was founded in 2008.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "other-host.test"
+   }
+  },
+  {
+   "url": "https://Kestrel-Optics.TEST./i",
+   "kind": null,
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "i",
+   "text": "Kestrel Optics was founded in 2009.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "Kestrel-Optics.TEST."
+   }
+  },
+  {
+   "url": "https://other-host.test/j",
+   "kind": "filing",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-15T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "j",
+   "text": "Kestrel Optics was founded in 2010.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "other-host.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}
