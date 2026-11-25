@@ -716,7 +716,7 @@ COMPANIES["corvane-systems.test"] = {
 }
 # originals the corvane pages point at
 _WIRE_HUB_PAGES = [
-    page(_WH + "/corvane-ceo", "Corvane Systems CEO: Ines Marchetti.", kind="news",
+    page(_WH + "/corvane-ceo", "An archived wire item.", kind="news",
          epochs=_ALL0_6, searchable=False, published_at="2026-01-30T00:00:00Z"),
 ]
 
@@ -759,10 +759,10 @@ COMPANIES["linden-forge.test"] = {
     ],
 }
 _WIRE_HUB_PAGES += [
-    # not evidence: its Vienna must not become a candidate
-    page(_WH + "/linden-hq", "Linden Forge is headquartered in Vienna.", kind="news",
+    # originals carry neutral text (the evidence question is isolated in oakhurst-media)
+    page(_WH + "/linden-hq", "An archived wire item.", kind="news",
          epochs=(0,), searchable=False, published_at="2026-01-02T00:00:00Z"),
-    page("https://fake-linden.test/hq", "Linden Forge is headquartered in Vienna.", kind="own",
+    page("https://fake-linden.test/hq", "An archived wire item.", kind="own",
          registrant="imposter.test", epochs=(0,), searchable=False,
          published_at="2026-01-03T00:00:00Z"),
 ]
@@ -801,7 +801,7 @@ COMPANIES["ravenmoor-energy.test"] = {
     ],
 }
 _WIRE_HUB_PAGES += [
-    page("https://archive.test/rm", "Ravenmoor Energy was founded in 1999.", kind=None,
+    page("https://archive.test/rm", "An archived wire item.", kind=None,
          registrant="pressroom.test", epochs=(0,), searchable=False,
          published_at="2026-01-01T00:00:00Z"),
 ]
@@ -858,6 +858,22 @@ COMPANIES["halden-labs.test"] = {
                "Birch Partners.", "2025-02-01"),
     ], published_at="2026-01-10T00:00:00Z"),
 }
+# ---- oakhurst-media: the one place where an original has a value of its own. The copy (searchable)
+# says Nantes; its original (not searchable, no search returns it) says Lyon. Stage 4 says a build
+# *obtains* the original to know the origin; evidence (§4) is what searches return plus research-cited
+# pages, so Lyon is no candidate (RUL-S4-05).
+COMPANIES["oakhurst-media.test"] = {
+    "names": ["Oakhurst Media"],
+    "pages": [
+        page("https://oakhurst-media.test/about", "Oakhurst Media was founded in 2011.",
+             published_at="2026-01-01T00:00:00Z"),
+        page("https://copy-desk.test/oakhurst", "Oakhurst Media is headquartered in Nantes.",
+             kind="news", canonical=_WH + "/oakhurst-hq", published_at="2026-01-05T00:00:00Z"),
+    ],
+}
+_WIRE_HUB_PAGES.append(page(_WH + "/oakhurst-hq", "Oakhurst Media is headquartered in Lyon.",
+                            kind="news", epochs=(0,), searchable=False,
+                            published_at="2026-01-02T00:00:00Z"))
 COMPANIES["wire-hub.test"] = {"names": ["Wire Hub"], "pages": _WIRE_HUB_PAGES}
 
 # A domain with no page anywhere in the corpus: the build completes ready with every field unknown.

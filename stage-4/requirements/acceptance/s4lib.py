@@ -158,7 +158,7 @@ def imported_expectation(bodies_in_order, times):
     for body, t in zip(bodies_in_order, times):
         out = {}
         for f in oracle.ALL_FIELDS:
-            fv = body["fields"][f]
+            fv = body["fields"].get(f) or {"value": None, "candidates": []}   # a stage-3 body has no investors
             groups = {}
             if fv["value"] is not None and f not in ("executives", "investors"):
                 groups = {repr(fv["value"]): {host_of(c["url"]) for c in fv["candidates"]

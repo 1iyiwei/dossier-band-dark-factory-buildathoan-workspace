@@ -172,3 +172,9 @@ def test_since_tracker_resets_when_a_member_leaves_and_returns():
     assert tr.step("investors", {}, t(4)) is None               # left: nothing stands
     assert tr.step("investors", g("a"), t(5)) is None           # returned: starts again
     assert tr.step("investors", g("a", "c"), t(6)) == t(6)
+
+
+def test_oakhurst_original_is_not_evidence():
+    f = tl.exp_fields("oakhurst-media.test", 0)["hq_city"]
+    assert [(c.value, c.origin) for c in f["candidates"]] == [("Nantes", "wire-hub.test")]   # not Lyon
+    assert f["status"] == "known" and f["origins"] == ["wire-hub.test"]

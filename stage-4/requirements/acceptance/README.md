@@ -16,8 +16,8 @@ and the files
 | `test_s4_upgrade.py` | stage-1/2/3 exports (needs `OLD_BASE_URL`, `OLD2_BASE_URL`, `OLD3_BASE_URL`) and the service's own export with batches | R4-UPG |
 | `test_s4_ui.py` | browser: `investors` takes no `data-testid`; contested screen; lookalike `data-kind` | R4-INV-12 |
 
-Corpus: five new companies (corvane-systems, linden-forge, ravenmoor-energy, quillon-bio, halden-labs) and the
-pseudo-company `wire-hub.test` (non-searchable originals only), 24 files in all; `python3 corpus_spec.py` regenerates `corpus/`.
+Corpus: six new companies (corvane-systems, linden-forge, ravenmoor-energy, quillon-bio, halden-labs, oakhurst-media) and the
+pseudo-company `wire-hub.test` (non-searchable originals only), 25 files in all; `python3 corpus_spec.py` regenerates `corpus/`.
 Carried files were adapted to eight fields (`oracle.ALL_FIELDS`), the three new keys and `origin` (`lib.assert_dossier_shape`,
 `s3lib.snapshot_problems`), nothing else.
 

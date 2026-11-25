@@ -32,9 +32,11 @@ def slow(mock, seconds=1.0, on=True):
 
 
 def n_calls_for(log, domain):
-    name = oracle.company_name(domain)
-    return [e for e in log if domain in (e.get("query") or "") or name.lower() in (e.get("query") or "").lower()
-            or any(domain in (u or "") for u in e.get("urls") or [])]
+    """Calls that research the company: a search or research run whose query names it. (An extract
+    of one of its URLs is not research of that dossier: another company's search may return it.)"""
+    name = oracle.company_name(domain).lower()
+    return [e for e in log if e.get("method") in ("search", "research")
+            and (domain in (e.get("query") or "") or name in (e.get("query") or "").lower())]
 
 
 # ------------------------------------------------------------------ validation (R4-BAT-01..03)
@@ -126,6 +128,7 @@ def test_R4_BAT_05_shape_states_and_spending_of_a_batch(fresh):
     api, mock = fresh
     tok = api.token(0)
     api.build(tok, TAL)                                          # an existing, ready dossier
+    tal_before = api.get(tok, TAL).json()
     mock.reset(0)
     slow(mock, 1.0)
     n0 = len(mock.log())
@@ -149,7 +152,7 @@ def test_R4_BAT_05_shape_states_and_spending_of_a_batch(fresh):
     assert done["spent_units"] == sum(spent.values()) == total_cost(log)
     for d in (MER, WRE):
         assert_dossier_shape(api.get(tok, d).json(), d)
-    assert api.get(tok, TAL).json()["spent_units"] > 0           # unchanged by the batch
+    assert api.get(tok, TAL).json() == tal_before                # untouched: same fields, spend, time
 
 
 def test_R4_BAT_06_a_batch_of_existing_dossiers_makes_no_call(fresh):

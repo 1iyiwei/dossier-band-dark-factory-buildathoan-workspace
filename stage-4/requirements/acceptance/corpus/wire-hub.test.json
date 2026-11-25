@@ -20,7 +20,7 @@
    "published_at": "2026-01-30T00:00:00Z",
    "true_from": "2026-01-01",
    "title": "wire-hub.test",
-   "text": "Corvane Systems CEO: Ines Marchetti.",
+   "text": "An archived wire item.",
    "facts": {},
    "lineage": {
     "canonical": null,
@@ -38,7 +38,7 @@
    "published_at": "2026-01-02T00:00:00Z",
    "true_from": "2026-01-01",
    "title": "wire-hub.test",
-   "text": "Linden Forge is headquartered in Vienna.",
+   "text": "An archived wire item.",
    "facts": {},
    "lineage": {
     "canonical": null,
@@ -56,7 +56,7 @@
    "published_at": "2026-01-03T00:00:00Z",
    "true_from": "2026-01-01",
    "title": "fake-linden.test",
-   "text": "Linden Forge is headquartered in Vienna.",
+   "text": "An archived wire item.",
    "facts": {},
    "lineage": {
     "canonical": null,
@@ -74,12 +74,30 @@
    "published_at": "2026-01-01T00:00:00Z",
    "true_from": "2026-01-01",
    "title": "archive.test",
-   "text": "Ravenmoor Energy was founded in 1999.",
+   "text": "An archived wire item.",
    "facts": {},
    "lineage": {
     "canonical": null,
     "first_published_by": null,
     "registrant": "pressroom.test"
+   }
+  },
+  {
+   "url": "https://wire-hub.test/oakhurst-hq",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": false,
+   "published_at": "2026-01-02T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "wire-hub.test",
+   "text": "Oakhurst Media is headquartered in Lyon.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "wire-hub.test"
    }
   }
  ],

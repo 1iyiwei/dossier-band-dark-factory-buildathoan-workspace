@@ -226,9 +226,7 @@ def from3(api, mock):
             history=s3lib.history(old, tok, d).json(),
             asof={r.clock: s3lib.as_of(old, tok, d, r.clock).json() for r in (recs_cv if d == CV else recs_qb)
                   if r.ready},
-            values=[s3lib.values(old, tok, d, ta, ao).json() for ta, ao in (
-                ("2026-03-01", "2026-03-05T00:00:00+00:00"), ("2021-05-01", "2026-03-03T09:00:00+00:00"),
-                ("2026-03-30", None))],
+            values=[s3lib.values(old, tok, d, ta, ao).json() for ta, ao in VALUES_PAIRS[d]],
             cur=old.get(tok, d).json())
     old_feed = s3lib.all_changes(old, tok)
     export = old.req("GET", "/_test/export", timeout=10.0).json()
@@ -239,6 +237,12 @@ def from3(api, mock):
     api.clock("2026-03-06T09:00:00+00:00")                 # import leaves the clock; the old one read this
     return dict(old=old, tok=tok, recs=dict(cv=recs_cv, qb=recs_qb), old_state=old_state,
                 old_feed=old_feed, api=api, mock=mock)
+
+
+VALUES_PAIRS = {CV: [("2026-03-01", "2026-03-05T00:00:00+00:00"), ("2021-05-01", "2026-03-03T09:00:00+00:00"),
+                     ("2026-03-30", None)],
+                QB: [("2026-03-01", "2026-03-05T12:00:00+00:00"), ("2024-06-01", "2026-03-06T09:00:00+00:00"),
+                     ("2026-03-30", None)]}
 
 
 def strip_new(fv):
@@ -282,8 +286,8 @@ def test_R4_UPG_07_stage3_values_history_and_feed_answer_as_before(from3):
     api, tok = from3["api"], from3["tok"]
     for dom in (CV, QB):
         st = from3["old_state"][dom]
-        for (ta, ao), old in zip((("2026-03-01", "2026-03-05T00:00:00+00:00"), ("2021-05-01", "2026-03-03T09:00:00+00:00"),
-                                  ("2026-03-30", None)), st["values"]):
+        for (ta, ao), old in zip(VALUES_PAIRS[dom], st["values"]):
+            assert "fields" in old, (dom, ta, ao, old)                 # the stage-3 service answered 200
             new = s3lib.values(api, tok, dom, ta, ao).json()
             assert list(new["fields"]) == oracle.ALL_FIELDS
             assert new["fields"]["investors"] == {"value": None, "true_from": None, "citations": []}

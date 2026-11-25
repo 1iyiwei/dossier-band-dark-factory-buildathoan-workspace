@@ -1,0 +1,47 @@
+{
+ "domain": "oakhurst-media.test",
+ "names": [
+  "Oakhurst Media"
+ ],
+ "pages": [
+  {
+   "url": "https://oakhurst-media.test/about",
+   "kind": "own",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-01T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "oakhurst-media.test",
+   "text": "Oakhurst Media was founded in 2011.",
+   "facts": {},
+   "lineage": {
+    "canonical": null,
+    "first_published_by": null,
+    "registrant": "oakhurst-media.test"
+   }
+  },
+  {
+   "url": "https://copy-desk.test/oakhurst",
+   "kind": "news",
+   "epochs": [
+    0
+   ],
+   "searchable": true,
+   "published_at": "2026-01-05T00:00:00Z",
+   "true_from": "2026-01-01",
+   "title": "copy-desk.test",
+   "text": "Oakhurst Media is headquartered in Nantes.",
+   "facts": {},
+   "lineage": {
+    "canonical": "https://wire-hub.test/oakhurst-hq",
+    "first_published_by": null,
+    "registrant": "copy-desk.test"
+   }
+  }
+ ],
+ "research": {
+  "nimble": {}
+ }
+}

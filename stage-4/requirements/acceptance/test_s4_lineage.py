@@ -124,13 +124,23 @@ def test_R4_ORG_01_origins_of_the_linden_forge_pages_by_hand(world):
     assert f["headcount_range"]["corroborated"] is True
 
 
-def test_R4_ORG_02_originals_are_not_evidence(world):
-    """The originals at wire-hub.test and fake-linden.test say Vienna; no search returns them, so
-    they are not evidence: no candidate comes from them."""
-    f = world["lf"]["snap"]["fields"]["hq_city"]
-    assert [c["value"] for c in f["candidates"]] == ["Graz", "Graz"]
-    urls = {c["url"] for c in all_cands(world["lf"]["snap"])}
-    assert not [u for u in urls if "wire-hub.test" in u or "fake-linden.test" in u]
+def test_R4_ORG_02_originals_are_obtained_but_are_not_evidence(fresh):
+    """RUL-S4-05. oakhurst-media.test: the copy (a search returns it) says Nantes, its original at
+    wire-hub.test (no search returns it) says Lyon. §4: evidence = the pages searches return plus
+    the pages research claims cite; stage 4 only says a build *obtains* the original, to know the
+    origin. So hq_city holds one candidate, Nantes, with origin wire-hub.test."""
+    api, mock = fresh
+    tok = api.token(0)
+    rec = s3lib.run(api, mock, tok, "oakhurst-media.test", [{"epoch": 0, "clock": T0}])[0]
+    hq = rec.snap["fields"]["hq_city"]
+    assert [(c["value"], c["url"], c["origin"]) for c in hq["candidates"]] == [
+        ("Nantes", "https://copy-desk.test/oakhurst", "wire-hub.test")]
+    assert hq["value"] == "Nantes" and hq["status"] == "known" and hq["origins"] == ["wire-hub.test"]
+    served = {it.get("url") for e in rec.segment if isinstance(e.get("status"), int) and e["status"] < 400
+              for it in e.get("served") or [] if isinstance(it, dict)}
+    assert "https://wire-hub.test/oakhurst-hq" in served          # obtained (R4-ORG-02) ...
+    assert not any("wire-hub.test" in c["url"] for fv in rec.snap["fields"].values()
+                   for c in fv["candidates"])                       # ... but nobody's candidate
 
 
 def test_R4_ORG_03_a_build_obtains_each_original_rule_2_needs(world):
@@ -161,7 +171,7 @@ def test_R4_ORG_04_canonical_chain_follows_three_urls_at_most(world):
     for u in ("https://c1.test/rm", "https://c2.test/rm", "https://c3.test/rm"):
         assert o[u] == "pressroom.test", u                       # the original's registrant
     assert o["https://ravenmoor-energy.test/about"] == "ravenmoor-energy.test"
-    assert fy["value"] == 2003                                   # the original's 1999 is not evidence
+    assert fy["value"] == 2003 and fy["status"] == "known"
     assert fy["origins"] == ["archive.test", "pressroom.test", "ravenmoor-energy.test"]
     assert fy["corroborated"] is True
 
