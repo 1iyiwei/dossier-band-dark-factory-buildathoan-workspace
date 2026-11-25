@@ -370,6 +370,11 @@ def test_R4_BAT_16_overlapping_batches_build_each_domain_once(fresh):
     assert [r.status_code for r in rs] == [202, 202]
     ids = [r.json()["batch_id"] for r in rs]
     assert ids[0] != ids[1]
+    # RUL-S4-10: a batch is `done` when the builds *it started* are over; one that started none is
+    # done at once while the other's builds still run. So wait for the builds themselves, then read
+    # both batches again.
+    for d in (TAL, MER):
+        assert api.wait(tok, d, timeout=120)["state"] == "ready"
     dones = [wait_batch(api, tok, i, timeout=120) for i in ids]
     slow(mock, on=False)
     from lib import domain_queries
