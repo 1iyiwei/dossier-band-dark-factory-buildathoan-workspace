@@ -230,10 +230,10 @@ class Batches(unittest.TestCase):
         budgets = [Budget(80, lambda _: None, pool) for _ in range(3)]
         taken = [b.reserve(20) for b in budgets]
         self.assertEqual(taken, [True, True, False])
-        self.assertEqual(budgets[2].remaining, 10)
+        self.assertEqual(budgets[2].remaining, 0)   # the third call would pass 50: the pool is closed
         budgets[0].refund(20)
-        self.assertEqual(budgets[2].remaining, 30)
-        self.assertEqual(pool.spent, 20)
+        self.assertEqual((budgets[2].remaining, pool.spent), (0, 20))
+        self.assertFalse(budgets[1].reserve(1))
 
     def test_batch_view_and_ownership(self):
         class Quiet:
