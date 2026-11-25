@@ -45,6 +45,7 @@ def world(api, mock):
     out["cv"] = dict(recs=recs, builds=builds, sim=tl.simulate(builds, CV), domain=CV)
     out["lf"] = one(api, mock, tok, LF, clock="2026-03-10T09:00:00+00:00")
     out["rm"] = one(api, mock, tok, RM, clock="2026-03-11T09:00:00+00:00")
+    out["ok"] = one(api, mock, tok, "oakhurst-media.test", clock="2026-03-12T09:00:00+00:00")
     return out
 
 
@@ -124,14 +125,12 @@ def test_R4_ORG_01_origins_of_the_linden_forge_pages_by_hand(world):
     assert f["headcount_range"]["corroborated"] is True
 
 
-def test_R4_ORG_02_originals_are_obtained_but_are_not_evidence(fresh):
+def test_R4_ORG_02_originals_are_obtained_but_are_not_evidence(world):
     """RUL-S4-05. oakhurst-media.test: the copy (a search returns it) says Nantes, its original at
     wire-hub.test (no search returns it) says Lyon. §4: evidence = the pages searches return plus
     the pages research claims cite; stage 4 only says a build *obtains* the original, to know the
     origin. So hq_city holds one candidate, Nantes, with origin wire-hub.test."""
-    api, mock = fresh
-    tok = api.token(0)
-    rec = s3lib.run(api, mock, tok, "oakhurst-media.test", [{"epoch": 0, "clock": T0}])[0]
+    rec = world["ok"]["recs"][0]                       # built in the shared module fixture (no reset here)
     hq = rec.snap["fields"]["hq_city"]
     assert [(c["value"], c["url"], c["origin"]) for c in hq["candidates"]] == [
         ("Nantes", "https://copy-desk.test/oakhurst", "wire-hub.test")]
