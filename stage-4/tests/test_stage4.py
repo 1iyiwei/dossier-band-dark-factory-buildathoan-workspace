@@ -269,7 +269,7 @@ class Restart(unittest.TestCase):
             @staticmethod
             def _call(provider, budget):
                 budget.reserve(1)
-                time.sleep(2)
+                time.sleep(10)
                 return Outcome(ok=False, provider=provider, exhausted=True)
 
             def search(self, provider, query, budget, cancelled, deadline, depth="lite", max_results=10):
@@ -287,9 +287,7 @@ class Restart(unittest.TestCase):
             user, _ = store.add_user("a@b.test", "A", hash_password("correct horse"))
             status, view = store.create_batch(user["id"], [D], 100)
             store._sync()
-            deadline = time.time() + 5
-            while time.time() < deadline and store.running and next(iter(store.running.values()))["spent"] < 3:
-                time.sleep(0.05)
+            time.sleep(0.5)   # the first wave of calls has reserved its units; every call then waits
             spent = next(iter(store.running.values()))["spent"]
             self.assertGreaterEqual(spent, 3)
             # The "restart": a new store over the same directory, while the old one is simply abandoned.
