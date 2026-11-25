@@ -1,0 +1,107 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 431B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 80B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 2.07kB done
+#4 DONE 0.0s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#5 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.0s done
+#5 DONE 0.0s
+
+#6 [4/5] RUN pip install --no-cache-dir -r requirements.txt
+#6 CACHED
+
+#7 [3/5] COPY requirements.txt .
+#7 CACHED
+
+#8 [2/5] WORKDIR /srv
+#8 CACHED
+
+#9 [5/5] COPY app ./app
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 exporting manifest sha256:973e5891190724f04870eb1b89d69cb59902666836861a9e9eae06b580b89ceb done
+#10 exporting config sha256:ee919d1bb74814baad488d65f481361492d7a41570f6c184324d05a5419eb587 done
+#10 exporting attestation manifest sha256:99ba0a132f4cc8a1ad26e14bdc2f0d984f96b30bb117f4aee7e60093d3b1e61c done
+#10 exporting manifest list sha256:73d2395cec5f1100a1df380f21157168064815c49aa9b95b9bf24638d6abe8cc done
+#10 naming to docker.io/library/dossier-svc-an4full:latest done
+#10 unpacking to docker.io/library/dossier-svc-an4full:latest done
+#10 DONE 0.0s
+R-DEL-09 measurement: start to first healthy /health = 2s (limit 60 s)
+acceptance: service=http://localhost:18601 mock=http://localhost:18681 corpus=1 python=/Users/lwei/Trees/band-dark-factory-buildathoan-workspace/band-work/dev-result/stage-4/requirements/acceptance/../../../../../sf-buildathon-2026/.venv/bin/python
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/lwei/Trees/band-dark-factory-buildathoan-workspace/band-work/dev-result/stage-4/requirements/acceptance
+plugins: anyio-4.16.0
+collected 654 items
+
+test_auth.py ...............................                             [  4%]
+test_builds.py ............................                              [  9%]
+test_candidates.py ................                                      [ 11%]
+test_concurrency.py ...                                                  [ 11%]
+test_domains_validation.py ............................................. [ 18%]
+...........................                                              [ 22%]
+test_export_import.py ................                                   [ 25%]
+test_idempotency.py .................                                    [ 27%]
+test_listing.py ..............                                           [ 30%]
+test_oracle_unit.py .................................................... [ 38%]
+.......                                                                  [ 39%]
+test_rank_unit.py .................                                      [ 41%]
+test_runtime.py .........................                                [ 45%]
+test_s3_concurrency.py .....                                             [ 46%]
+test_s3_endpoints.py .......................                             [ 49%]
+test_s3_executives.py F.............                                     [ 51%]
+test_s3_restart.py .......                                               [ 53%]
+test_s3_timeline.py .................................................... [ 61%]
+.....                                                                    [ 61%]
+test_s3_ui.py ...                                                        [ 62%]
+test_s3_upgrade.py .............                                         [ 64%]
+test_s4_batches.py ....................................                  [ 69%]
+test_s4_failure.py .................                                     [ 72%]
+test_s4_investors.py ............                                        [ 74%]
+test_s4_lineage.py ..................                                    [ 76%]
+test_s4_restart.py ......                                                [ 77%]
+test_s4_ui.py ...                                                        [ 78%]
+test_s4_unit.py ............                                             [ 80%]
+test_s4_upgrade.py ..............                                        [ 82%]
+test_support_corpus.py ....................                              [ 85%]
+test_timeline_unit.py ........                                           [ 86%]
+test_ui_contract.py ..............                                       [ 88%]
+test_ui_flows.py ..............                                          [ 90%]
+test_ui_screens.py .............................                         [ 95%]
+test_ui_visual.py ..................                                     [ 98%]
+test_upgrade.py .....                                                    [ 98%]
+test_web_ratelimit.py ........                                           [100%]
+
+=================================== FAILURES ===================================
+__________________ test_R3_EXE_01_seventh_field_after_the_six __________________
+
+world = {'api': <lib.Api object at 0x10957d490>, 'mock': <lib.Mock object at 0x109d17590>, 'tok': 'vAi8U5lq4Ri4DEpflNIPnWoFjOR...e, 'learned_at': None, 'origins': [], 'corroborated': False, 'since': None}}]), 'domain': 'cobalt-assembly.test'}, ...}
+
+    def test_R3_EXE_01_seventh_field_after_the_six(world):
+        b = world["cb"]["recs"][0].snap
+>       assert list(b["fields"]) == ["legal_name", "hq_city", "ceo", "founded_year", "headcount_range",
+                                     "funding_total", "executives"]
+E       AssertionError: assert ['legal_name'...g_total', ...] == ['legal_name'...g_total', ...]
+E         
+E         Left contains one more item: 'investors'
+E         Use -v to get more diff
+
+test_s3_executives.py:50: AssertionError
+=========================== short test summary info ============================
+FAILED test_s3_executives.py::test_R3_EXE_01_seventh_field_after_the_six - As...
+================== 1 failed, 653 passed in 781.58s (0:13:01) ===================
+exit=1

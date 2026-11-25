@@ -48,7 +48,7 @@ def names(fv):
 def test_R3_EXE_01_seventh_field_after_the_six(world):
     b = world["cb"]["recs"][0].snap
     assert list(b["fields"]) == ["legal_name", "hq_city", "ceo", "founded_year", "headcount_range",
-                                 "funding_total", "executives"]
+                                 "funding_total", "executives", "investors"]   # stage 4: an eighth field
     assert_dossier_shape(b, CB)
     h = s3lib.history(world["api"], world["tok"], CB).json()
     assert list(h["fields"]) == oracle.ALL_FIELDS
