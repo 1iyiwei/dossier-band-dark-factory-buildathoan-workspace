@@ -15,7 +15,7 @@ from app.builder import Builder  # noqa: E402
 from app.candidates import build_all, make_candidate  # noqa: E402
 from app.history import change_type  # noqa: E402
 from app.passwords import hash_password  # noqa: E402
-from app.providers import Budget, Deadline, Gateway, Pool  # noqa: E402
+from app.providers import Budget, Deadline, Gateway, Outcome, Pool  # noqa: E402
 from app.store import Store  # noqa: E402
 from app.support import supported_investors  # noqa: E402
 
@@ -261,11 +261,20 @@ class Restart(unittest.TestCase):
             tavily_enabled = False
             call_timeout = 1.0
 
-            def search(self, provider, query, budget, cancelled, deadline, depth="lite", max_results=10):
+            @staticmethod
+            def _call(provider, budget):
                 budget.reserve(1)
-                time.sleep(30)
+                time.sleep(2)
+                return Outcome(ok=False, provider=provider, exhausted=True)
 
-            extract = research = search
+            def search(self, provider, query, budget, cancelled, deadline, depth="lite", max_results=10):
+                return self._call(provider, budget)
+
+            def extract(self, provider, url, budget, cancelled, deadline, render=False):
+                return self._call(provider, budget)
+
+            def research(self, query, schema, budget, cancelled, deadline):
+                return self._call("nimble", budget)
 
         with tempfile.TemporaryDirectory() as directory:
             store = Store(Gate(), directory)
