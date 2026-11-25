@@ -372,6 +372,7 @@ class Builder:
         self._parallel([lambda u=u: one(u) for u in wanted])
         self.attempted -= self.failed_urls   # a refused extract is made again in a later round
         self.failed_urls.clear()
+        self._fetch_originals()              # before further pages are read: an origin needs its original
 
     def _render_dynamic(self) -> None:
         """Load in a browser the pages whose plain text may differ from what a browser shows.
