@@ -140,20 +140,38 @@ from a clean clone. Left open, in the Coordinator's report: a stage-2 export
 carries no build list, so an imported stage-2 dossier has one build
 (RUL-S3-15); durability under load and throughput weren't measured.
 
+### Stage 4
+
+| When (UTC) | Who | What | Fix |
+|---|---|---|---|
+| Nov 25 19:11 | Coordinator | In `373f10f`, a batch whose next call didn't fit its budget went on making cheaper calls; the Coordinator ordered the pool to close instead | `9123318` |
+| Nov 25 23:17 | Reviewer | **REJECT `9123318`**: 19 of 117 stage-4 acceptance tests fail, though the shipped checks pass | Routed to both owners. The Analyst adjudicated: pages fetched only to resolve an origin were being used as evidence (ruled not evidence, RUL-S4-05), and an interrupted refresh after a restart ended `ready` with old data (now `failed`, fields kept); both are Implementer fixes (`42fd288`, `b5c0164`). Three of the failures were test bugs, which the Analyst fixed (`6e4bea8`) |
+| Nov 25 23:32 | Implementer → Analyst | Found a test-order defect in the Analyst's tests (one test reset the service under the others) | Analyst fixed it (`9ff4d16`) and later a flaky batch test (`b45d3d9`) |
+| Nov 25 23:42 | Reviewer | **ACCEPT `bf368e7`**: shipped checks for stages 1–4 pass in isolated mode; acceptance 117/118, the one failure a flaky test since fixed | Stage 4 final |
+
+Stage 4 final: app code `bf368e7`, ledger 383 rows (379 passing, 4 ruled, 0
+open), Analyst suite 653/654 (the one carried stage-3 test hard-coded seven
+fields; fixed in the close-out `025469b`). Left open, in the Coordinator's
+report: only one test pins the originals-are-not-evidence ruling; the UX
+review was of `373f10f` and wasn't repeated on `bf368e7`; deep canonical
+chains, cycles and concurrent batch load weren't probed; an interrupted build
+ends `failed` rather than resuming (the specification allows either).
+
 ## Measured cost and time
 
 Cost is Band's list-price estimate (`band usage`), not a bill.
 
-| Seat | Stage 1 | Stage 2 | Stage 3 |
-|---|---|---|---|
-| Implementer | $16.42 | $10.11 | $3.78 |
-| Analyst | $13.11 | $9.36 | $10.15 |
-| Reviewer | $10.87 | $1.73 | $2.10 |
-| Coordinator | $4.58 | $1.46 | $2.01 |
-| UX Reviewer | $2.04 | $0.12 | $0.33 |
-| **Room total** | **$47.02** (89.2M tokens) | **$22.79** (92.0M tokens) | **$18.38** (81.2M tokens) |
+| Seat | Stage 1 | Stage 2 | Stage 3 | Stage 4 |
+|---|---|---|---|---|
+| Implementer | $16.42 | $10.11 | $3.78 | $5.80 |
+| Analyst | $13.11 | $9.36 | $10.15 | $9.09 |
+| Reviewer | $10.87 | $1.73 | $2.10 | $1.49 |
+| Coordinator | $4.58 | $1.46 | $2.01 | $1.03 |
+| UX Reviewer | $2.04 | $0.12 | $0.33 | $0.10 |
+| **Room total** | **$47.02** (89.2M tokens) | **$22.79** (92.0M tokens) | **$18.38** (81.2M tokens) | **$17.51** (75.0M tokens) |
 
-Each stage ran in its own room (`room-1.json`, `room-2.json`, `room-3.json`). Stage 2 was
+All four stages: **$105.70**. Each stage ran in its own room (`room-1.json`
+… `room-4.json`). Stage 2 was
 about half the cost of stage 1 on more tokens: all seats on Sonnet or Haiku,
 and a fresh room per stage.
 
@@ -171,6 +189,12 @@ Stage 3, wall clock Nov 24 01:50 to 18:42 UTC: about 8 hours of continuous
 work (01:50–09:38) through the ledger, tests and reviews; then a stall with
 the last two verdicts finished but undelivered (see below), resolved after
 the human nudge at 17:12.
+
+Stage 4, wall clock Nov 25 18:45 to 23:58 UTC: 32 minutes of work by all
+seats (18:45–19:17) to the first revisions, the ledger and the UX review,
+until the usage limit; a stop of about four hours; then 41 minutes
+(23:17–23:58) through the rejection, the fixes, acceptance and close. About
+**73 minutes** of work.
 
 ## What we tried, and what it cost us
 
@@ -227,7 +251,13 @@ the human nudge at 17:12.
   report later; never ask the human to relay. The Coordinator, which starts
   handoffs as new messages (that works for it), gets the other side: ask
   for the result as the reply, and treat an acknowledgement without a result
-  as no report. Stage 4 runs with it.
+  as no report. Stage 4 ran with it, and every seat's result reached the
+  room: 13 results, each posted as the reply to its handoff, with no
+  acknowledgement-only replies and no nudge needed.
+- **Human input in stage 4, disclosed:** the dispatch; a restart of the
+  Coordinator and the Reviewer (about 23:17 UTC) after they hit the usage
+  limit at 19:14–19:17 and didn't resume when it reset at 22:10. No room
+  message: the only human message in `room-4.json` is the dispatch.
 - **From the toy practice run:** a default agent Band adds to new rooms stays
   in the room log and needs a mandate (we now check the participant list);
   commits defaulted to the human's git identity until each seat committed
@@ -235,9 +265,23 @@ the human nudge at 17:12.
 
 ## Live result
 
-`dossier-runway.com.json` is the highest stage built against the live web.
-From stage 1: state
-`ready`, all six fields known. Values are only as good as the evidence the
-service retrieved within its budget; for example the legal name came back as
-an operating entity's name, and total funding looks low compared with public
-reports. That is a research-economy and selection question for later stages.
+`dossier-runway.com.json` is `GET /dossiers/runway.com` from `stage-4/`,
+built against the live web on Nov 26 00:15 UTC, unedited. State `ready`, 77
+of 80 budget units spent. Of eight fields, two are `known`, two `contested`
+and four `unknown`:
+
+- **Known:** founded year 2018 (right); HQ city "North America", which is a
+  region, not a city: the value was taken from a third-party employee-stats
+  page.
+- **Contested:** headcount range ("1-10" from the careers page, against four
+  other ranges from one stats page) and total funding (US$2 million, the
+  first round in the Wikipedia article, against $8.5M, $35M and $50M from the
+  same article). The service correctly declines to pick a winner, but none of
+  the candidates is the total.
+- **Unknown:** legal name, CEO, executives and investors.
+
+Stage 3 against the live web gave the same picture (six fields: two known,
+two contested, two unknown). The stage-4 work (origins, corroboration,
+batches, budgets) is checked against the mock web; on the live web, the
+selection of pages within the budget is still the weak point. That is a
+research-economy question we didn't get to.
