@@ -280,8 +280,54 @@ and four `unknown`:
   the candidates is the total.
 - **Unknown:** legal name, CEO, executives and investors.
 
-Stage 3 against the live web gave the same picture (six fields: two known,
-two contested, two unknown). The stage-4 work (origins, corroboration,
+Stage 3 against the live web gave the same picture (seven fields: two known,
+two contested, three unknown). The stage-4 work (origins, corroboration,
 batches, budgets) is checked against the mock web; on the live web, the
-selection of pages within the budget is still the weak point. That is a
-research-economy question we didn't get to.
+selection of pages within the budget is still the weak point.
+
+## What the factory missed, and how we'd change it
+
+The factory checked that the service **follows the rules**; nothing in it
+checked that the service's **answers are right**. Three reasons, all in the
+factory rather than the code:
+
+- **The Analyst works from the specification alone.** That is what finds
+  the requirements the shipped checks never ask, but a specification says
+  how to choose sources, spend a budget and mark a disagreement; it doesn't
+  say that "North America" is not a city. So the ledger's 383 rows check
+  behaviour, not answer quality.
+- **The local test web is cleaner than the real one.** Its pages say what
+  they are, so a service that follows the rules gets right answers there.
+  The live web has the noise that misled ours: aggregator pages, per-round
+  figures that look like totals, careers pages. The band never saw it.
+- **No seat read a finished output as a user would.** The Reviewer and UX
+  Reviewer verified rejections, rulings and budgets; nobody opened a result
+  and asked whether a person would believe it.
+
+The research-economy criterion is spend **per correct field**, so this
+costs twice: wrong fields are not counted, and the spend that bought them
+still is. Changes we would make, all generic (no track vocabulary):
+
+1. **Analyst: hostile fixtures.** "The local test environment is cleaner
+   than the real one. Add fixtures that imitate how real sources mislead
+   (third-party aggregators, partial figures that look like totals, values
+   of the wrong kind, stale pages) and ledger rows for the outcome a careful
+   person would want." The band writes these from how the world looks, not
+   from the hidden checks.
+2. **Reviewer / UX Reviewer: a plausibility read.** "Before accepting, read
+   a sample of the deliverable's actual outputs as its user would; reject a
+   value a domain-literate person would reject at a glance, even when every
+   test passes."
+3. **Measure what the spend bought.** "Where the deliverable chooses under a
+   budget, report results-per-unit-spent on a fixed workload, and treat a
+   poor ratio as a defect owned by the Implementer," not only that the
+   budget holds.
+4. **Dispatch: one real case before closing.** We built against the live web
+   only after acceptance, when it could no longer change anything. A live
+   run judged by the Reviewer before the stage closes would have; it needs
+   a key in the seat's environment, never in a mandate or the repository.
+
+Some of the result is the specification's: "contested" can be the right
+answer when sources disagree, and a funding total may need rounds summed,
+which the specification may not ask for. Changes 1 and 2 would still have
+caught the city and the headcount.
